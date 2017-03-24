@@ -1,0 +1,6 @@
+﻿C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppBuild.targets(392,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (Practica1.vcxproj, Practica2.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  main.cpp
+c:\users\jcompany\desktop\informaticagrafica_practica\src\main.cpp(220): warning C4305: '+=': truncation from 'double' to 'float'
+c:\users\jcompany\desktop\informaticagrafica_practica\src\main.cpp(224): warning C4305: '-=': truncation from 'double' to 'float'
+  Proyecto.vcxproj -> C:\Users\jcompany\Desktop\InformaticaGrafica_Practica\Debug\Practica3.exe
+  Proyecto.vcxproj -> C:\Users\jcompany\Desktop\InformaticaGrafica_Practica\Debug\Practica3.pdb (Full PDB)

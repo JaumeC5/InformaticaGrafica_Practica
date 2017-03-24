@@ -1,0 +1,29 @@
+#version 330 core
+
+// Input vertex data, different for all executions of this shader.
+layout(location = 0) in vec3 position;
+
+out vec3 positionMod;
+
+uniform float angle;
+
+void main(){
+
+	positionMod = position;
+
+
+	if (position.y < 0 && position.x < 0){
+		positionMod.x -= angle;
+	}
+
+	if (position.y < 0 && position.x > 0){
+		positionMod.x += angle;
+	}
+
+
+	gl_Position = vec4 (positionMod.x, positionMod.y, positionMod.z, 1.0) ;
+	gl_Position.w = 2.0;
+
+
+	 
+}
