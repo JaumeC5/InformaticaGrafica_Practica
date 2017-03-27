@@ -11,6 +11,13 @@
 #include <sstream>
 #include <math.h>
 #include <SOIL.h>
+#include <glm.hpp>
+#include <gtc/matrix_transform.hpp>
+#include <gtc/type_ptr.hpp>
+
+using namespace glm;
+
+
 
 
 using namespace std;
@@ -18,6 +25,8 @@ const GLint WIDTH = 800, HEIGHT = 600;
 bool WIDEFRAME = false;
 bool textureMove;
 float yTexPos = 0.5;
+bool rotateLeft;
+bool rotateRight;
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 
@@ -64,6 +73,16 @@ int main() {
 	Shader textureShader("./src/textureVertex.vertexshader", "./src/textureFragment.fragmentshader");
 
 
+	mat4 scaleTrans;
+	scaleTrans = glm::scale(scaleTrans, vec3(0.5f, 0.5f, 0.0f));
+
+	mat4 translationTrans;
+	translationTrans = glm::translate(translationTrans, vec3(0.5, 0.0, 0.0f));
+
+	mat4 rotationTrans;
+	rotationTrans = glm::rotate(translationTrans, glm::radians(180.0f), vec3(0.0, 0.0, 1.0f));
+
+
 	GLfloat vertexBuffer[] = {
 		// Positions          // Colors           // Texture Coords
 		0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // Top Right
@@ -99,7 +118,7 @@ int main() {
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
 
-	
+
 
 	glfwSetKeyCallback(window, key_callback);
 
@@ -137,12 +156,7 @@ int main() {
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, textureWidth, textureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
 	SOIL_free_image_data(image);
 
-	
-	
-
 	glBindVertexArray(0);
-	//glBindBuffer(GL_ARRAY_BUFFER, 0);
-	//glBindTexture(GL_TEXTURE_2D, 0);
 
 	GLint variableShader = glGetUniformLocation(triangleShader.Program, "angle");
 	GLint moveTex = glGetUniformLocation(textureShader.Program, "opacity");
@@ -150,18 +164,33 @@ int main() {
 
 	while (!glfwWindowShouldClose(window)) {
 
-		
+
 		glClear(GL_COLOR_BUFFER_BIT);
 		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture1);
 		glUniform1i(glGetUniformLocation(textureShader.Program, "Texture1"), 0);
-	
+
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, texture2);
 		glUniform1i(glGetUniformLocation(textureShader.Program, "Texture2"), 1);
-		
+
+
+		GLint scTrans = glGetUniformLocation(textureShader.Program, "scaleTrans");
+		glUniformMatrix4fv(scTrans, 1, GL_FALSE, glm::value_ptr(scaleTrans));
+
+		GLint trTrans = glGetUniformLocation(textureShader.Program, "translationTrans");
+		glUniformMatrix4fv(trTrans, 1, GL_FALSE, glm::value_ptr(translationTrans));
+
+		if (rotateLeft) {
+			GLint roTrans = glGetUniformLocation(textureShader.Program, "rotationTrans");
+			glUniformMatrix4fv(roTrans, 1, GL_FALSE, glm::value_ptr(rotationTrans));
+		}
+		/*if (rotateRight) {
+		GLint roTrans = glGetUniformLocation(textureShader.Program, "rotationTrans");
+		glUniformMatrix4fv(roTrans, 1, GL_FALSE, glm::value_ptr(- rotationTrans));
+		}*/
 
 		//glUniform1f(variableShader, 0.3 * abs(sin(glfwGetTime())));
 
@@ -176,7 +205,6 @@ int main() {
 		else {
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
 		}
 
 		if (textureMove) {
@@ -185,10 +213,7 @@ int main() {
 
 		else if (!textureMove) {
 			glUniform1f(moveTex, yTexPos);
-
 		}
-		
-		
 
 		glBindVertexArray(0);
 		glfwSwapBuffers(window);
@@ -206,25 +231,36 @@ int main() {
 }
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode) {
-	
+
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GL_TRUE);
+
 	if (key == GLFW_KEY_W && action == GLFW_PRESS) {
 		if (WIDEFRAME) {
 			WIDEFRAME = false;
 		}
 		else { WIDEFRAME = true; }
 	}
+
 	if (key == GLFW_KEY_UP && action == GLFW_PRESS) {
-			textureMove = true;
-			yTexPos += 0.1;
+		textureMove = true;
+		yTexPos += 0.1;
 	}
+
 	if (key == GLFW_KEY_DOWN && action == GLFW_PRESS) {
-			textureMove = false;
-			yTexPos -= 0.1;
-		
-		
+		textureMove = false;
+		yTexPos -= 0.1;
 	}
-	
+	if (key == GLFW_KEY_LEFT && action == GLFW_PRESS) {
+		rotateLeft = true;
+	}
+	else { rotateLeft = false; }
+
+	if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS) {
+		rotateRight = true;
+	}
+	else { rotateRight = false; }
+
 }
+
 
