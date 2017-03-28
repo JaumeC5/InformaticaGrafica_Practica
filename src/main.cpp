@@ -77,6 +77,9 @@ int main() {
 	mat4 translationTrans;
 	translationTrans = glm::translate(translationTrans, vec3(0.5, 0.0, 0.0f));
 
+	mat4 rotationTrans;
+	rotationTrans = glm::rotate(translationTrans, glm::radians(rotation), vec3(0.0, 0.0, 1.0f));
+
 
 	GLfloat vertexBuffer[] = {
 		// Positions          // Colors           // Texture Coords
@@ -178,10 +181,10 @@ int main() {
 		GLint trTrans = glGetUniformLocation(textureShader.Program, "translationTrans");
 		glUniformMatrix4fv(trTrans, 1, GL_FALSE, glm::value_ptr(translationTrans));
 
-		mat4 rotationTrans;
-		if (rotateLeft) {
-			rotationTrans = glm::rotate(translationTrans, glm::radians(rotation), vec3(0.0, 0.0, 1.0f));
-		}
+		
+	
+		rotationTrans = glm::rotate(translationTrans, glm::radians(rotation), vec3(0.0, 0.0, 1.0f));
+	
 		GLint roTrans = glGetUniformLocation(textureShader.Program, "rotationTrans");
 		glUniformMatrix4fv(roTrans, 1, GL_FALSE, glm::value_ptr(rotationTrans));
 		
@@ -246,12 +249,10 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		yTexPos -= 0.1;
 	}
 	if (key == GLFW_KEY_LEFT) {
-		rotation -= 10.0f;
-		rotateLeft = true;
+		rotation += 10.0f;
 	}
 	if (key == GLFW_KEY_RIGHT) {
-		rotation += 10.0f;
-		rotateRight = true;
+		rotation -= 10.0f;
 	}
 
 }
