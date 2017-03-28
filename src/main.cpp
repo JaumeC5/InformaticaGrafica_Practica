@@ -16,17 +16,15 @@
 #include <gtc/type_ptr.hpp>
 
 using namespace glm;
-
-
-
-
 using namespace std;
+
 const GLint WIDTH = 800, HEIGHT = 600;
 bool WIDEFRAME = false;
 bool textureMove;
 float yTexPos = 0.5;
 bool rotateLeft;
 bool rotateRight;
+float rotation = 0.0;
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 
@@ -78,9 +76,6 @@ int main() {
 
 	mat4 translationTrans;
 	translationTrans = glm::translate(translationTrans, vec3(0.5, 0.0, 0.0f));
-
-	mat4 rotationTrans;
-	rotationTrans = glm::rotate(translationTrans, glm::radians(180.0f), vec3(0.0, 0.0, 1.0f));
 
 
 	GLfloat vertexBuffer[] = {
@@ -183,14 +178,13 @@ int main() {
 		GLint trTrans = glGetUniformLocation(textureShader.Program, "translationTrans");
 		glUniformMatrix4fv(trTrans, 1, GL_FALSE, glm::value_ptr(translationTrans));
 
+		mat4 rotationTrans;
 		if (rotateLeft) {
-			GLint roTrans = glGetUniformLocation(textureShader.Program, "rotationTrans");
-			glUniformMatrix4fv(roTrans, 1, GL_FALSE, glm::value_ptr(rotationTrans));
+			rotationTrans = glm::rotate(translationTrans, glm::radians(rotation), vec3(0.0, 0.0, 1.0f));
 		}
-		/*if (rotateRight) {
 		GLint roTrans = glGetUniformLocation(textureShader.Program, "rotationTrans");
-		glUniformMatrix4fv(roTrans, 1, GL_FALSE, glm::value_ptr(- rotationTrans));
-		}*/
+		glUniformMatrix4fv(roTrans, 1, GL_FALSE, glm::value_ptr(rotationTrans));
+		
 
 		//glUniform1f(variableShader, 0.3 * abs(sin(glfwGetTime())));
 
@@ -251,15 +245,14 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		textureMove = false;
 		yTexPos -= 0.1;
 	}
-	if (key == GLFW_KEY_LEFT && action == GLFW_PRESS) {
+	if (key == GLFW_KEY_LEFT) {
+		rotation -= 10.0f;
 		rotateLeft = true;
 	}
-	else { rotateLeft = false; }
-
-	if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS) {
+	if (key == GLFW_KEY_RIGHT) {
+		rotation += 10.0f;
 		rotateRight = true;
 	}
-	else { rotateRight = false; }
 
 }
 
