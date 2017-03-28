@@ -64,21 +64,36 @@ int main() {
 	glClear(GL_COLOR_BUFFER_BIT);
 	glClearColor(0, 0, 0, 0);
 
+	//Camara -----------------
+	float aspectRatio = 16.0f / 9.0f;
+	float FOV = 60.0f;
+	glm::mat4 Proj = glm::perspective(glm::radians(FOV), aspectRatio, 0.1f, 100.0f);
+	glm::mat4 View = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -0.3f));
+
+
 
 	//General Stuff
 	Shader triangleShader("./src/SimpleVertexShader.vertexshader", "./src/SimpleFragmentShader.fragmentshader");
 
 	Shader textureShader("./src/textureVertex.vertexshader", "./src/textureFragment.fragmentshader");
 
+	Shader coordsShader("./src/coordsVertex.vertexshader", "./src/coordsFragment.fragmentshader");
+
 
 	mat4 scaleTrans;
 	scaleTrans = glm::scale(scaleTrans, vec3(0.5f, 0.5f, 0.0f));
 
 	mat4 translationTrans;
-	translationTrans = glm::translate(translationTrans, vec3(0.5, 0.0, 0.0f));
+	translationTrans = glm::translate(translationTrans, vec3(0.5f, 0.0f, 0.0f));
 
 	mat4 rotationTrans;
 	rotationTrans = glm::rotate(translationTrans, glm::radians(rotation), vec3(0.0, 0.0, 1.0f));
+
+	mat4 translatePlane;
+	translatePlane = glm::translate(translatePlane, vec3(0.0f, 0.5f, 0.0f));
+
+	mat4 rotatePlane;
+	rotationTrans = glm::rotate(translationTrans, glm::radians(50.0f), vec3(0.0, 0.0, 1.0f));
 
 
 	GLfloat vertexBuffer[] = {
@@ -181,7 +196,13 @@ int main() {
 		GLint trTrans = glGetUniformLocation(textureShader.Program, "translationTrans");
 		glUniformMatrix4fv(trTrans, 1, GL_FALSE, glm::value_ptr(translationTrans));
 
-		
+		//Plano
+		GLint roPlane = glGetUniformLocation(coordsShader.Program, "rotatePlane");
+		glUniformMatrix4fv(scTrans, 1, GL_FALSE, glm::value_ptr(rotatePlane));
+
+		GLint trPlane = glGetUniformLocation(coordsShader.Program, "translatePlane");
+		glUniformMatrix4fv(trTrans, 1, GL_FALSE, glm::value_ptr(translatePlane));
+		//
 	
 		rotationTrans = glm::rotate(translationTrans, glm::radians(rotation), vec3(0.0, 0.0, 1.0f));
 	

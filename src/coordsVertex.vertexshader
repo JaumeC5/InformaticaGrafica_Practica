@@ -1,0 +1,13 @@
+#version 330 core
+
+// Input vertex data, different for all executions of this shader.
+
+layout (location = 0) in vec3 position;
+
+uniform float rotatePlane;
+uniform float translatePlane;
+
+void main(){
+
+	  gl_Position = translatePlane * rotatePlane * vec4 (position, 1.0) ;
+}
