@@ -21,7 +21,7 @@ using namespace std;
 const GLint WIDTH = 800, HEIGHT = 600;
 bool WIDEFRAME = false;
 bool textureMove;
-float yTexPos = 0.5;
+float textOpacity = 0.5;
 bool rotateLeft;
 bool rotateRight;
 float rotation = 0.0;
@@ -66,10 +66,9 @@ int main() {
 
 	//Camara -----------------
 	float aspectRatio = 16.0f / 9.0f;
-	float FOV = 60.0f;
-	glm::mat4 Proj = glm::perspective(glm::radians(FOV), aspectRatio, 0.1f, 100.0f);
-	glm::mat4 View = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -0.3f));
-
+	float FOV = 50.0f;
+	mat4 proj = glm::perspective(glm::radians(FOV), aspectRatio, 0.1f, 100.0f);
+	mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -0.3f));
 
 
 	//General Stuff
@@ -80,20 +79,24 @@ int main() {
 	Shader coordsShader("./src/coordsVertex.vertexshader", "./src/coordsFragment.fragmentshader");
 
 
+
+
 	mat4 scaleTrans;
 	scaleTrans = glm::scale(scaleTrans, vec3(0.5f, 0.5f, 0.0f));
 
 	mat4 translationTrans;
-	translationTrans = glm::translate(translationTrans, vec3(0.5f, 0.0f, 0.0f));
+	//translationTrans = glm::translate(translationTrans, vec3(0.0f, 0.0f, 0.0f));
+	translationTrans = glm::translate(translationTrans, vec3(0.0f, 0.0f, 0.0f));
 
 	mat4 rotationTrans;
-	rotationTrans = glm::rotate(translationTrans, glm::radians(rotation), vec3(0.0, 0.0, 1.0f));
+	//rotationTrans = glm::rotate(translationTrans, glm::radians(rotation), vec3(0.0, 0.0, 1.0f));
+	rotationTrans = glm::rotate(translationTrans, glm::radians(50.0f), vec3(0.0, 0.0, 1.0f));
 
 	mat4 translatePlane;
-	translatePlane = glm::translate(translatePlane, vec3(0.0f, 0.5f, 0.0f));
+	translatePlane = glm::translate(translatePlane, vec3(0.0f, -0.5f, 0.0f));
 
 	mat4 rotatePlane;
-	rotationTrans = glm::rotate(translationTrans, glm::radians(50.0f), vec3(0.0, 0.0, 1.0f));
+	rotatePlane = glm::rotate(translationTrans, glm::radians(50.0f), vec3(0.0, 0.0, 1.0f));
 
 
 	GLfloat vertexBuffer[] = {
@@ -107,6 +110,66 @@ int main() {
 		0,1,3,
 		1,2,3,
 	};
+
+
+	GLfloat VertexBufferCube[] = {
+		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+		0.5f , -0.5f, -0.5f,  1.0f, 0.0f,
+		0.5f ,  0.5f, -0.5f,  1.0f, 1.0f,
+		0.5f ,  0.5f, -0.5f,  1.0f, 1.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		0.5f , -0.5f,  0.5f,  1.0f, 0.0f,
+		0.5f ,  0.5f,  0.5f,  1.0f, 1.0f,
+		0.5f ,  0.5f,  0.5f,  1.0f, 1.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+		0.5f ,  0.5f,  0.5f,  1.0f, 0.0f,
+		0.5f ,  0.5f, -0.5f,  1.0f, 1.0f,
+		0.5f , -0.5f, -0.5f,  0.0f, 1.0f,
+		0.5f , -0.5f, -0.5f,  0.0f, 1.0f,
+		0.5f , -0.5f,  0.5f,  0.0f, 0.0f,
+		0.5f ,  0.5f,  0.5f,  1.0f, 0.0f,
+
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		0.5f , -0.5f, -0.5f,  1.0f, 1.0f,
+		0.5f , -0.5f,  0.5f,  1.0f, 0.0f,
+		0.5f , -0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+		0.5f ,  0.5f, -0.5f,  1.0f, 1.0f,
+		0.5f ,  0.5f,  0.5f,  1.0f, 0.0f,
+		0.5f ,  0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+	};
+
+	vec3 CubesPositionBuffer[] = {
+		vec3(0.0f ,  0.0f,  0.0f),
+		vec3(2.0f ,  5.0f, -15.0f),
+		vec3(-1.5f, -2.2f, -2.5f),
+		vec3(-3.8f, -2.0f, -12.3f),
+		vec3(2.4f , -0.4f, -3.5f),
+		vec3(-1.7f,  3.0f, -7.5f),
+		vec3(1.3f , -2.0f, -2.5f),
+		vec3(1.5f ,  2.0f, -2.5f),
+		vec3(1.5f ,  0.2f, -1.5f),
+		vec3(-1.3f,  1.0f, -1.5f)
+	};
+
+
 
 	GLuint VAO, VBO, EBO;
 
@@ -190,6 +253,12 @@ int main() {
 		glUniform1i(glGetUniformLocation(textureShader.Program, "Texture2"), 1);
 
 
+
+		rotationTrans = glm::rotate(translationTrans, glm::radians(rotation), vec3(0.0, 0.0, 1.0f));
+
+		GLint roTrans = glGetUniformLocation(textureShader.Program, "rotationTrans");
+		glUniformMatrix4fv(roTrans, 1, GL_FALSE, glm::value_ptr(rotationTrans));
+
 		GLint scTrans = glGetUniformLocation(textureShader.Program, "scaleTrans");
 		glUniformMatrix4fv(scTrans, 1, GL_FALSE, glm::value_ptr(scaleTrans));
 
@@ -197,17 +266,25 @@ int main() {
 		glUniformMatrix4fv(trTrans, 1, GL_FALSE, glm::value_ptr(translationTrans));
 
 		//Plano
-		GLint roPlane = glGetUniformLocation(coordsShader.Program, "rotatePlane");
+		GLint roPlane = glGetUniformLocation(textureShader.Program, "rotatePlane");
 		glUniformMatrix4fv(scTrans, 1, GL_FALSE, glm::value_ptr(rotatePlane));
 
-		GLint trPlane = glGetUniformLocation(coordsShader.Program, "translatePlane");
+		GLint trPlane = glGetUniformLocation(textureShader.Program, "translatePlane");
 		glUniformMatrix4fv(trTrans, 1, GL_FALSE, glm::value_ptr(translatePlane));
 		//
+
+
+		//--
+		GLint uniView = glGetUniformLocation(coordsShader.Program, "view");
+		glUniformMatrix4fv(uniView, 1, GL_FALSE, glm::value_ptr(view));
+
+		GLint uniProj = glGetUniformLocation(coordsShader.Program, "proj");
+		glUniformMatrix4fv(uniProj, 1, GL_FALSE, glm::value_ptr(proj));
+		//--
+
+
 	
-		rotationTrans = glm::rotate(translationTrans, glm::radians(rotation), vec3(0.0, 0.0, 1.0f));
-	
-		GLint roTrans = glGetUniformLocation(textureShader.Program, "rotationTrans");
-		glUniformMatrix4fv(roTrans, 1, GL_FALSE, glm::value_ptr(rotationTrans));
+		
 		
 
 		//glUniform1f(variableShader, 0.3 * abs(sin(glfwGetTime())));
@@ -226,11 +303,11 @@ int main() {
 		}
 
 		if (textureMove) {
-			glUniform1f(moveTex, yTexPos);
+			glUniform1f(moveTex, textOpacity);
 		}
 
 		else if (!textureMove) {
-			glUniform1f(moveTex, yTexPos);
+			glUniform1f(moveTex, textOpacity);
 		}
 
 		glBindVertexArray(0);
@@ -262,18 +339,24 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 	if (key == GLFW_KEY_UP && action == GLFW_PRESS) {
 		textureMove = true;
-		yTexPos += 0.1;
+		textOpacity += 0.1;
 	}
 
 	if (key == GLFW_KEY_DOWN && action == GLFW_PRESS) {
 		textureMove = false;
-		yTexPos -= 0.1;
+		textOpacity -= 0.1;
 	}
 	if (key == GLFW_KEY_LEFT) {
 		rotation += 10.0f;
 	}
 	if (key == GLFW_KEY_RIGHT) {
 		rotation -= 10.0f;
+	}
+	if (key == GLFW_KEY_1) {
+		textOpacity = 1;
+	}
+	if (key == GLFW_KEY_2) {
+		textOpacity = 0;
 	}
 
 }

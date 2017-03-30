@@ -18,12 +18,17 @@ uniform mat4 translationTrans;
 uniform mat4 rotationTrans;
 
 
+uniform mat4 rotatePlane;
+uniform mat4 translatePlane;
+
+
 void main(){
 
 	TexCoord1 = texCoord1;
 	TexCoord2 = texCoord2;
 
-    gl_Position = scaleTrans * translationTrans * rotationTrans * vec4 (position, 1.0) ;
-	 
+    gl_Position =/* scaleTrans * */ translationTrans * rotationTrans * vec4 (position, 1.0) ;
+	//gl_Position = translatePlane * rotatePlane * vec4 (position, 1.0) ;
+	
 }
 
