@@ -86,7 +86,7 @@ int main() {
 
 	mat4 translationTrans;
 	//translationTrans = glm::translate(translationTrans, vec3(0.0f, 0.0f, 0.0f));
-	translationTrans = glm::translate(translationTrans, vec3(0.0f, 0.0f, 0.0f));
+	translationTrans = glm::translate(translationTrans, vec3(0.0f, 0.0f, 0.0f));//
 
 	mat4 rotationTrans;
 	//rotationTrans = glm::rotate(translationTrans, glm::radians(rotation), vec3(0.0, 0.0, 1.0f));
