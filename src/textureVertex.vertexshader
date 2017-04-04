@@ -27,6 +27,7 @@ void main(){
 	TexCoord1 = texCoord1;
 	TexCoord2 = texCoord2;
 
+
     gl_Position = scaleTrans * translationTrans * rotationTrans * vec4 (position, 1.0) ;
 	//gl_Position = translatePlane * rotatePlane * vec4 (position, 1.0) ;
 	

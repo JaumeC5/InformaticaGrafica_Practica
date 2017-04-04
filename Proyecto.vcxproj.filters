@@ -40,5 +40,11 @@
     <None Include="src\textureVertex.vertexshader">
       <Filter>Archivos de recursos</Filter>
     </None>
+    <None Include="src\coordsFragment.fragmentshader">
+      <Filter>Archivos de recursos</Filter>
+    </None>
+    <None Include="src\coordsVertex.vertexshader">
+      <Filter>Archivos de recursos</Filter>
+    </None>
   </ItemGroup>
 </Project>
