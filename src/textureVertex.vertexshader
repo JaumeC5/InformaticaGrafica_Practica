@@ -2,9 +2,8 @@
 
 // Input vertex data, different for all executions of this shader.
 layout (location = 0) in vec3 position;
-layout (location = 1) in vec3 color;
-layout (location = 2) in vec2 texCoord1;
-layout (location = 2) in vec2 texCoord2;
+layout (location = 1) in vec2 texCoord1;
+layout (location = 1) in vec2 texCoord2;
 
 out vec2 TexCoord1;
 out vec2 TexCoord2;
@@ -29,7 +28,6 @@ void main(){
 
 
     gl_Position = scaleTrans * translationTrans * rotationTrans * vec4 (position, 1.0) ;
-	//gl_Position = translatePlane * rotatePlane * vec4 (position, 1.0) ;
-	
+
 }
 

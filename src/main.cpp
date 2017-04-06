@@ -81,9 +81,14 @@ int main() {
 	float aspectRatio = 16.0f / 9.0f;
 	float FOV = 60.0f;
 	mat4 proj = glm::perspective(glm::radians(FOV), aspectRatio, 0.1f, 100.0f);
-	mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -2.f));
-	mat4 model;
-
+	//mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -2.f));
+	glm::mat4 view = glm::lookAt(
+		glm::vec3(1.5f, 1.5f, 1.5f),
+		glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(0.0f, 0.0f, 1.0f)
+	);
+	//mat4 model;
+	
 
 	mat4 scaleTrans;
 	scaleTrans = glm::scale(scaleTrans, vec3(0.5f, 0.5f, 0.0f));
@@ -106,14 +111,11 @@ int main() {
 
 	GLuint VAO;
 	glGenVertexArrays(1, &VAO);
+	glBindVertexArray(VAO);
 	
+	GLuint VBO;
+	glGenBuffers(1, &VBO);
 
-
-	GLuint VBO2;
-	glGenBuffers(1, &VBO2);
-
-	GLuint EBO2;
-	glGenBuffers(1, &EBO2);
 
 	GLfloat VertexBufferCube[] = {
 		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
@@ -175,21 +177,18 @@ int main() {
 	//---
 
 
-	glBindBuffer(GL_ARRAY_BUFFER, VBO2);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(VertexBufferCube), CubesPositionBuffer, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(VertexBufferCube), VertexBufferCube, GL_STATIC_DRAW);
 
-	/*glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO2);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(CubesPositionBuffer), CubesPositionBuffer, GL_STATIC_DRAW);*/
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (GLvoid*)0);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (GLvoid*)(3 * sizeof(GL_FLOAT)));
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (GLvoid*)(6 * sizeof(GL_FLOAT)));
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GL_FLOAT), (GLvoid*)0);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GL_FLOAT), (GLvoid*)( 3 * sizeof(GL_FLOAT)));
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
-	glEnableVertexAttribArray(2);
+
 
 
 	glfwSetKeyCallback(window, key_callback);
@@ -216,8 +215,6 @@ int main() {
 	glBindTexture(GL_TEXTURE_2D, texture2);
 
 
-	
-
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 
@@ -234,9 +231,6 @@ int main() {
 	GLint moveTex = glGetUniformLocation(textureShader.Program, "opacity");
 
 
-	
-
-
 
 	while (!glfwWindowShouldClose(window)) {
 
@@ -246,19 +240,11 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-		glBindVertexArray(VAO); {
-			model = glm::rotate(model, glm::radians(0.0f), vec3(0.f, 0.f, 0.f));
-			glUniformMatrix4fv(glGetUniformLocation(coordsShader.Program, "model"), 1, GL_FALSE, value_ptr(model));
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			glDrawArrays(GL_TRIANGLES, 0, 36);
-
-		}
+		glBindVertexArray(VAO);
 
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
-
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 
 		glActiveTexture(GL_TEXTURE0);
@@ -268,7 +254,6 @@ int main() {
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, texture2);
 		glUniform1i(glGetUniformLocation(textureShader.Program, "Texture2"), 1);
-
 
 
 		rotationTrans = glm::rotate(translationTrans, glm::radians(rotation), vec3(0.0, 0.0, 1.0f));
@@ -291,7 +276,7 @@ int main() {
 		//
 
 
-		//--
+		//Camara--
 		GLint uniView = glGetUniformLocation(coordsShader.Program, "view");
 		glUniformMatrix4fv(uniView, 1, GL_FALSE, glm::value_ptr(view));
 
@@ -300,11 +285,9 @@ int main() {
 		//--
 
 
-		//glUniform1f(variableShader, 0.3 * abs(sin(glfwGetTime())));
 
 		textureShader.USE();
 		
-
 
 		if (textureMove) {
 			glUniform1f(moveTex, textOpacity);
@@ -316,7 +299,6 @@ int main() {
 
 		
 
-
 		glBindVertexArray(0);
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -324,7 +306,7 @@ int main() {
 	}
 
 	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBO2);
+	glDeleteBuffers(1, &VBO);
 	
 	glDeleteTextures(1, &texture1);
 	glDeleteTextures(1, &texture2);
@@ -365,7 +347,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	if (key == GLFW_KEY_2) {
 		textOpacity = 0;
 	}
-	if (key == GLFW_KEY_W) {
+	/*if (key == GLFW_KEY_W) {
 	
 	}
 	if (key == GLFW_KEY_S) {
@@ -376,7 +358,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	}
 	if (key == GLFW_KEY_D) {
 	
-	}
+	}*/
 
 }
 
