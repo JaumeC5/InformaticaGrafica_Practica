@@ -24,6 +24,7 @@ bool textureMove;
 float textOpacity = 0.8;
 float rotationX = 0.0;
 float rotationY = 0.0;
+float rotationCubes = 0.f;
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 
@@ -85,7 +86,15 @@ int main() {
 		glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3(0.0f, 0.0f, 1.5f)
 	);
-	//mat4 model;
+
+	vec3 CubesPositions[3]{
+		vec3(1.f,1.f,1.f),
+		vec3(0.5f, 0.5f, 0.5f),
+		vec3(0.f, 0.f, 0.f),
+	};
+	mat4 model;
+
+	
 	
 
 	mat4 scaleTrans;
@@ -94,6 +103,7 @@ int main() {
 	mat4 translationTrans;
 	//translationTrans = glm::translate(translationTrans, vec3(0.0f, 0.0f, 0.0f));
 	translationTrans = glm::translate(translationTrans, vec3(0.0f, 0.0f, 0.0f));//
+
 
 
 	mat4 rotationTransX;
@@ -112,6 +122,23 @@ int main() {
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
 	
+	/*
+	glBindVertexArray(VAO); {
+		//Model 1
+		model = glm::rotate(
+			vec3(0.f),
+			vec3(rotationCubes, rotationCubes*0.5f, 0),
+			CubesPositions[0]
+			);
+
+		glUniformMatrix4fv(glGetUniformLocation(textureShader.Program, "model"), 1, GL_FALSE, value_ptr(model));
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+	}
+	*/
+
+
 	GLuint VBO;
 	glGenBuffers(1, &VBO);
 
@@ -255,7 +282,7 @@ int main() {
 		glUniform1i(glGetUniformLocation(textureShader.Program, "Texture2"), 1);
 
 
-		rotationTransX = glm::rotate(translationTrans, glm::radians(rotationX), vec3(0.0, 1.0, 0.0f));
+		rotationTransX = glm::rotate(translationTrans, glm::radians(rotationX), vec3(1.0, 0.0, 0.0f));
 		GLint roTransX = glGetUniformLocation(textureShader.Program, "rotationTransX");
 		glUniformMatrix4fv(roTransX, 1, GL_FALSE, glm::value_ptr(rotationTransX));
 
