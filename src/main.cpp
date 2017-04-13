@@ -82,14 +82,14 @@ int main() {
 	mat4 proj = glm::perspective(glm::radians(FOV), aspectRatio, 0.1f, 100.0f);
 	//mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -2.f));
 	glm::mat4 view = glm::lookAt(
-		glm::vec3(2.0f, 2.0f, 1.5f),
+		glm::vec3(1.0f, 1.0f, 1.5f),
 		glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3(0.0f, 0.0f, 1.5f)
 	);
 
 	vec3 CubesPositions[3]{
-		vec3(1.f,1.f,1.f),
-		vec3(0.5f, 0.5f, 0.5f),
+		vec3(1.f,2.5f,0.5f),
+		vec3(3.f, 3.f, 3.f),
 		vec3(0.f, 0.f, 0.f),
 	};
 	mat4 model;
@@ -122,21 +122,22 @@ int main() {
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
 	
-	/*
-	glBindVertexArray(VAO); {
-		//Model 1
-		model = glm::rotate(
-			vec3(0.f),
-			vec3(rotationCubes, rotationCubes*0.5f, 0),
-			CubesPositions[0]
-			);
 
-		glUniformMatrix4fv(glGetUniformLocation(textureShader.Program, "model"), 1, GL_FALSE, value_ptr(model));
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+	glBindVertexArray(VAO); {
+		////Model 1
+		//model = glm::lookAt(vec3(0.f), vec3(rotationCubes, rotationCubes*0.5f, 0), CubesPositions[0]);
+		//glUniformMatrix4fv(glGetUniformLocation(textureShader.Program, "model"), 1, GL_FALSE, value_ptr(model));
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		//glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		////Model 2
+		//model = glm::lookAt(vec3(0.f), vec3(rotationCubes, rotationCubes*0.5f, 0), CubesPositions[1]);
+		//glUniformMatrix4fv(glGetUniformLocation(textureShader.Program, "model"), 1, GL_FALSE, value_ptr(model));
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		//glDrawArrays(GL_TRIANGLES, 0, 36);
 
 	}
-	*/
+
 
 
 	GLuint VBO;
@@ -312,6 +313,9 @@ int main() {
 
 		GLint uniProj = glGetUniformLocation(coordsShader.Program, "proj");
 		glUniformMatrix4fv(uniProj, 1, GL_FALSE, glm::value_ptr(proj));
+
+		GLint uniMode = glGetUniformLocation(coordsShader.Program, "model");
+		glUniformMatrix4fv(uniMode, 1, GL_FALSE, glm::value_ptr(model));
 		//--
 
 
