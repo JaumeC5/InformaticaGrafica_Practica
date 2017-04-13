@@ -14,7 +14,8 @@ uniform sampler2D Texture2;
 
 uniform mat4 scaleTrans;
 uniform mat4 translationTrans;
-uniform mat4 rotationTrans;
+uniform mat4 rotationTransY;
+uniform mat4 rotationTransX;
 
 
 uniform mat4 rotatePlane;
@@ -27,7 +28,7 @@ void main(){
 	TexCoord2 = texCoord2;
 
 
-    gl_Position = scaleTrans * translationTrans * rotationTrans * vec4 (position, 1.0) ;
+    gl_Position = scaleTrans * translationTrans * rotationTransY * rotationTransX * vec4 (position, 1.0) ;
 
 }
 

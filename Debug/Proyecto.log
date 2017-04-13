@@ -1,6 +1,25 @@
-﻿C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppBuild.targets(392,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (Practica1.vcxproj, Practica2.vcxproj).  This can lead to incorrect clean and rebuild behavior.
-  main.cpp
-c:\users\jcompany\documents\github\informaticagrafica_practica\src\main.cpp(331): warning C4305: '+=': truncation from 'double' to 'float'
-c:\users\jcompany\documents\github\informaticagrafica_practica\src\main.cpp(336): warning C4305: '-=': truncation from 'double' to 'float'
-  Proyecto.vcxproj -> C:\Users\jcompany\Documents\GitHub\InformaticaGrafica_Practica\Debug\Practica3.exe
-  Proyecto.vcxproj -> C:\Users\jcompany\Documents\GitHub\InformaticaGrafica_Practica\Debug\Practica3.pdb (Full PDB)
+﻿Compilación iniciada a las 13/04/2017 17:34:23.
+     1>Proyecto "C:\Users\Jaume\Documents\GitHub\InformaticaGrafica_Practica\Proyecto.vcxproj" en el nodo 2 (Build destinos).
+     1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppBuild.targets(392,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (Practica1.vcxproj, Practica2.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+     1>ClCompile:
+         D:\Microsoft Visual Studio 14.0\VC\bin\CL.exe /c /I.\include\soil\src /I.\Common /I.\include\glm /I.\include\glfw\include /I.\include\glew\include /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt src\main.cpp
+         main.cpp
+     1>c:\users\jaume\documents\github\informaticagrafica_practica\src\main.cpp(24): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
+     1>c:\users\jaume\documents\github\informaticagrafica_practica\src\main.cpp(334): warning C4305: '+=': truncamiento de 'double' a 'float'
+     1>c:\users\jaume\documents\github\informaticagrafica_practica\src\main.cpp(339): warning C4305: '-=': truncamiento de 'double' a 'float'
+       Link:
+         D:\Microsoft Visual Studio 14.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Jaume\Documents\GitHub\InformaticaGrafica_Practica\Debug\Practica3.exe" /INCREMENTAL /NOLOGO /LIBPATH:.\include\soil\lib /LIBPATH:.\include\glew\lib\Release\Win32 /LIBPATH:".\include\glfw\lib-vc2015" libSOIL.lib opengl32.lib glew32s.lib glfw3.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /Debug /PDB:"C:\Users\Jaume\Documents\GitHub\InformaticaGrafica_Practica\Debug\Practica3.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Jaume\Documents\GitHub\InformaticaGrafica_Practica\Debug\Practica3.lib" /MACHINE:X86 Debug\main.obj
+         Debug\Shader.obj
+     1>LINK : warning LNK4098: la biblioteca predeterminada'LIBCMT' entra en conflicto con otras bibliotecas; use la biblioteca /NODEFAULTLIB:biblioteca
+     1>LINK : warning LNK4098: la biblioteca predeterminada'MSVCRT' entra en conflicto con otras bibliotecas; use la biblioteca /NODEFAULTLIB:biblioteca
+     1>libSOIL.lib(image_DXT.obj) : warning LNK4099: no se encontr¾ PDB 'SOIL.pdb' con 'libSOIL.lib(image_DXT.obj)' o en 'C:\Users\Jaume\Documents\GitHub\InformaticaGrafica_Practica\Debug\SOIL.pdb'; se vincularß el objeto sin tener en cuenta informaci¾n de depuraci¾n
+     1>libSOIL.lib(image_helper.obj) : warning LNK4099: no se encontr¾ PDB 'SOIL.pdb' con 'libSOIL.lib(image_helper.obj)' o en 'C:\Users\Jaume\Documents\GitHub\InformaticaGrafica_Practica\Debug\SOIL.pdb'; se vincularß el objeto sin tener en cuenta informaci¾n de depuraci¾n
+     1>libSOIL.lib(SOIL.obj) : warning LNK4099: no se encontr¾ PDB 'SOIL.pdb' con 'libSOIL.lib(SOIL.obj)' o en 'C:\Users\Jaume\Documents\GitHub\InformaticaGrafica_Practica\Debug\SOIL.pdb'; se vincularß el objeto sin tener en cuenta informaci¾n de depuraci¾n
+     1>libSOIL.lib(stb_image_aug.obj) : warning LNK4099: no se encontr¾ PDB 'SOIL.pdb' con 'libSOIL.lib(stb_image_aug.obj)' o en 'C:\Users\Jaume\Documents\GitHub\InformaticaGrafica_Practica\Debug\SOIL.pdb'; se vincularß el objeto sin tener en cuenta informaci¾n de depuraci¾n
+     1>glew32s.lib(glew.obj) : warning LNK4099: no se encontr¾ PDB 'vc120.pdb' con 'glew32s.lib(glew.obj)' o en 'C:\Users\Jaume\Documents\GitHub\InformaticaGrafica_Practica\Debug\vc120.pdb'; se vincularß el objeto sin tener en cuenta informaci¾n de depuraci¾n
+         Proyecto.vcxproj -> C:\Users\Jaume\Documents\GitHub\InformaticaGrafica_Practica\Debug\Practica3.exe
+     1>Compilación del proyecto terminada "C:\Users\Jaume\Documents\GitHub\InformaticaGrafica_Practica\Proyecto.vcxproj" (Build destinos).
+
+Compilación correcta.
+
+Tiempo transcurrido 00:00:01.36

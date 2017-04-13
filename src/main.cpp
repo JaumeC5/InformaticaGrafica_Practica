@@ -21,13 +21,11 @@ using namespace std;
 const GLint WIDTH = 800, HEIGHT = 600;
 bool WIDEFRAME = false;
 bool textureMove;
-float textOpacity = 0.5;
-bool rotateLeft;
-bool rotateRight;
-float rotation = 0.0;
+float textOpacity = 0.8;
+float rotationX = 0.0;
+float rotationY = 0.0;
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
-
 
 
 int main() {
@@ -83,9 +81,9 @@ int main() {
 	mat4 proj = glm::perspective(glm::radians(FOV), aspectRatio, 0.1f, 100.0f);
 	//mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -2.f));
 	glm::mat4 view = glm::lookAt(
-		glm::vec3(1.5f, 1.5f, 1.5f),
+		glm::vec3(2.0f, 2.0f, 1.5f),
 		glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(0.0f, 0.0f, 1.0f)
+		glm::vec3(0.0f, 0.0f, 1.5f)
 	);
 	//mat4 model;
 	
@@ -97,9 +95,10 @@ int main() {
 	//translationTrans = glm::translate(translationTrans, vec3(0.0f, 0.0f, 0.0f));
 	translationTrans = glm::translate(translationTrans, vec3(0.0f, 0.0f, 0.0f));//
 
-	mat4 rotationTrans;
-	//rotationTrans = glm::rotate(translationTrans, glm::radians(rotation), vec3(0.0, 0.0, 1.0f));
-	rotationTrans = glm::rotate(translationTrans, glm::radians(50.0f), vec3(0.0, 0.0, 1.0f));
+
+	mat4 rotationTransX;
+	mat4 rotationTransY;
+	//rotationTransY = glm::rotate(translationTrans, glm::radians(50.0f), vec3(0.0, 0.0, 1.0f));
 
 	mat4 translatePlane;
 	translatePlane = glm::translate(translatePlane, vec3(0.0f, 0.0f, 0.0f));
@@ -206,7 +205,7 @@ int main() {
 	int textureWidth, textureHeight;
 	unsigned char* image;
 
-	image = SOIL_load_image("./src/textureBlanca.png", &textureWidth, &textureHeight, 0, SOIL_LOAD_RGB);
+	image = SOIL_load_image("./src/textureCena.png", &textureWidth, &textureHeight, 0, SOIL_LOAD_RGB);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, textureWidth, textureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
 	SOIL_free_image_data(image);
 
@@ -221,7 +220,7 @@ int main() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	image = SOIL_load_image("./src/texture2.png", &textureWidth, &textureHeight, 0, SOIL_LOAD_RGB);
+	image = SOIL_load_image("./src/texture.png", &textureWidth, &textureHeight, 0, SOIL_LOAD_RGB);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, textureWidth, textureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
 	SOIL_free_image_data(image);
 
@@ -256,10 +255,14 @@ int main() {
 		glUniform1i(glGetUniformLocation(textureShader.Program, "Texture2"), 1);
 
 
-		rotationTrans = glm::rotate(translationTrans, glm::radians(rotation), vec3(0.0, 0.0, 1.0f));
+		rotationTransX = glm::rotate(translationTrans, glm::radians(rotationX), vec3(0.0, 1.0, 0.0f));
+		GLint roTransX = glGetUniformLocation(textureShader.Program, "rotationTransX");
+		glUniformMatrix4fv(roTransX, 1, GL_FALSE, glm::value_ptr(rotationTransX));
 
-		GLint roTrans = glGetUniformLocation(textureShader.Program, "rotationTrans");
-		glUniformMatrix4fv(roTrans, 1, GL_FALSE, glm::value_ptr(rotationTrans));
+		rotationTransY = glm::rotate(translationTrans, glm::radians(rotationY), vec3(0.0, 0.0, 1.0f));
+		GLint roTransY = glGetUniformLocation(textureShader.Program, "rotationTransY");
+		glUniformMatrix4fv(roTransY, 1, GL_FALSE, glm::value_ptr(rotationTransY));
+
 
 		GLint scTrans = glGetUniformLocation(textureShader.Program, "scaleTrans");
 		glUniformMatrix4fv(scTrans, 1, GL_FALSE, glm::value_ptr(scaleTrans));
@@ -336,10 +339,10 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		textOpacity -= 0.1;
 	}
 	if (key == GLFW_KEY_LEFT) {
-		rotation += 10.0f;
+		rotationY += 10.0f;
 	}
 	if (key == GLFW_KEY_RIGHT) {
-		rotation -= 10.0f;
+		rotationY -= 10.0f;
 	}
 	if (key == GLFW_KEY_1) {
 		textOpacity = 1;
@@ -347,18 +350,18 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	if (key == GLFW_KEY_2) {
 		textOpacity = 0;
 	}
-	/*if (key == GLFW_KEY_W) {
-	
+	if (key == GLFW_KEY_W) {
+		rotationX -= 10.0f;
 	}
 	if (key == GLFW_KEY_S) {
-
+		rotationX += 10.0f;
 	}
 	if (key == GLFW_KEY_A) {
-
+		rotationY += 10.0f;
 	}
 	if (key == GLFW_KEY_D) {
-	
-	}*/
+		rotationY -= 10.0f;
+	}
 
 }
 
