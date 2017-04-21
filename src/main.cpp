@@ -21,9 +21,10 @@ using namespace std;
 const GLint WIDTH = 800, HEIGHT = 600;
 bool WIDEFRAME = false;
 bool textureMove;
-float textOpacity = 0.8;
+float textOpacity = 0.9;
 float rotationX = 0.0;
 float rotationY = 0.0;
+float rotationZ = 0.0;
 float rotationCubes = 0.f;
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
@@ -68,11 +69,8 @@ int main() {
 
 	
 
-
 	Shader triangleShader("./src/SimpleVertexShader.vertexshader", "./src/SimpleFragmentShader.fragmentshader");
-
 	Shader textureShader("./src/textureVertex.vertexshader", "./src/textureFragment.fragmentshader");
-
 	Shader coordsShader("./src/coordsVertex.vertexshader", "./src/coordsFragment.fragmentshader");
 
 
@@ -80,22 +78,16 @@ int main() {
 	float aspectRatio = 16.0f / 9.0f;
 	float FOV = 60.0f;
 	mat4 proj = glm::perspective(glm::radians(FOV), aspectRatio, 0.1f, 100.0f);
-	//mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -2.f));
-	glm::mat4 view = glm::lookAt(
+	mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -2.f));
+	/*glm::mat4 view = glm::lookAt(
 		glm::vec3(1.0f, 1.0f, 1.5f),
 		glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(0.0f, 0.0f, 1.5f)
-	);
+		glm::vec3(0.0f, 0.0f, 0.5f)
+	);*/
 
-	vec3 CubesPositions[3]{
-		vec3(1.f,2.5f,0.5f),
-		vec3(3.f, 3.f, 3.f),
-		vec3(0.f, 0.f, 0.f),
-	};
+
 	mat4 model;
 
-	
-	
 
 	mat4 scaleTrans;
 	scaleTrans = glm::scale(scaleTrans, vec3(0.5f, 0.5f, 0.0f));
@@ -108,6 +100,7 @@ int main() {
 
 	mat4 rotationTransX;
 	mat4 rotationTransY;
+	mat4 rotationTransZ;
 	//rotationTransY = glm::rotate(translationTrans, glm::radians(50.0f), vec3(0.0, 0.0, 1.0f));
 
 	mat4 translatePlane;
@@ -122,23 +115,6 @@ int main() {
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
 	
-
-	glBindVertexArray(VAO); {
-		////Model 1
-		//model = glm::lookAt(vec3(0.f), vec3(rotationCubes, rotationCubes*0.5f, 0), CubesPositions[0]);
-		//glUniformMatrix4fv(glGetUniformLocation(textureShader.Program, "model"), 1, GL_FALSE, value_ptr(model));
-		//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		//glDrawArrays(GL_TRIANGLES, 0, 36);
-
-		////Model 2
-		//model = glm::lookAt(vec3(0.f), vec3(rotationCubes, rotationCubes*0.5f, 0), CubesPositions[1]);
-		//glUniformMatrix4fv(glGetUniformLocation(textureShader.Program, "model"), 1, GL_FALSE, value_ptr(model));
-		//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		//glDrawArrays(GL_TRIANGLES, 0, 36);
-
-	}
-
-
 
 	GLuint VBO;
 	glGenBuffers(1, &VBO);
@@ -262,6 +238,7 @@ int main() {
 	while (!glfwWindowShouldClose(window)) {
 
 
+
 		glClear(GL_COLOR_BUFFER_BIT);
 		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -290,6 +267,10 @@ int main() {
 		rotationTransY = glm::rotate(translationTrans, glm::radians(rotationY), vec3(0.0, 0.0, 1.0f));
 		GLint roTransY = glGetUniformLocation(textureShader.Program, "rotationTransY");
 		glUniformMatrix4fv(roTransY, 1, GL_FALSE, glm::value_ptr(rotationTransY));
+
+		rotationTransZ = glm::rotate(translationTrans, glm::radians(rotationZ), vec3(0.0, 1.0, 0.0f));
+		GLint roTransZ = glGetUniformLocation(textureShader.Program, "rotationTransZ");
+		glUniformMatrix4fv(roTransZ, 1, GL_FALSE, glm::value_ptr(rotationTransZ));
 
 
 		GLint scTrans = glGetUniformLocation(textureShader.Program, "scaleTrans");
@@ -329,6 +310,21 @@ int main() {
 
 		else if (!textureMove) {
 			glUniform1f(moveTex, textOpacity);
+		}
+
+		glBindVertexArray(VAO); {
+			////Model 1
+			model = glm::lookAt(vec3(0.f), vec3(rotationCubes, rotationCubes*0.5f, 0), CubesPositionBuffer[0]);
+			glUniformMatrix4fv(glGetUniformLocation(textureShader.Program, "model"), 1, GL_FALSE, value_ptr(model));
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+
+			//Model 2
+			model = glm::lookAt(vec3(0.f), vec3(rotationCubes, rotationCubes*0.5f, 0), CubesPositionBuffer[1]);
+			glUniformMatrix4fv(glGetUniformLocation(textureShader.Program, "model"), 1, GL_FALSE, value_ptr(model));
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+
 		}
 
 		
@@ -392,6 +388,12 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	}
 	if (key == GLFW_KEY_D) {
 		rotationY -= 10.0f;
+	}
+	if (key == GLFW_KEY_Q) {
+		rotationZ += 10.0f;
+	}
+	if (key == GLFW_KEY_E) {
+		rotationZ -= 10.0f;
 	}
 
 }
