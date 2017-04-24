@@ -27,6 +27,23 @@ float rotationY = 0.0;
 float rotationZ = 0.0;
 float rotationCubes = 0.f;
 
+float lastFrame;
+float actualTime = glfwGetTime();
+float deltaTime;
+
+float cameraSpeed;
+float camSpeedConstant = 3.f;
+
+vec3 cameraPos(0,0,3);
+vec3 vecDir(0,0,0);
+vec3 vecRight;
+vec3 vecUp;
+
+GLfloat radio = 8.0f;
+GLfloat X = sin(glfwGetTime()) * radio;
+GLfloat Z = cos(glfwGetTime()) * radio;
+
+
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 
 
@@ -80,12 +97,24 @@ int main() {
 	float FOV = 60.0f;
 	mat4 proj = glm::perspective(glm::radians(FOV), aspectRatio, 0.1f, 100.0f);
 	//mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -3.0f));
+	/*
 	glm::mat4 view = glm::lookAt(
 		glm::vec3(3.f, 3.f, 3.f),
 		glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3(0.0f, 0.0f, 0.5f)
 	);
+	*/
+	mat4 view;
+	view = glm::lookAt(glm::vec3(X, 0.0f, Z), vec3(0.0f, 0.0f, 0.0f), vec3(0.0, 1.0, 0.0));
 	mat4 model;
+
+
+	//new
+
+	
+	//mat4 matLookAt = glm::lookAt(vecRight, vecUp, vecDir); //nope?
+	
+
 	//------------------------
 
 
@@ -292,6 +321,18 @@ int main() {
 		GLint uniMode = glGetUniformLocation(coordsShader.Program, "model");
 		glUniformMatrix4fv(uniMode, 1, GL_FALSE, glm::value_ptr(model));
 		//--
+		//new--
+		
+		deltaTime = actualTime - lastFrame;
+		lastFrame = actualTime;
+		cameraSpeed = camSpeedConstant * deltaTime;
+
+
+		mat4 matLookAt = glm::lookAt(cameraPos, vecDir, vecUp);
+		cameraPos += vecDir * cameraSpeed;
+		cameraPos += cross(vecDir, vecUp) * cameraSpeed;
+
+		//----
 
 		//triangleShader.USE();
 		textureShader.USE();
@@ -307,20 +348,20 @@ int main() {
 			glUniform1f(moveTex, textOpacity);
 		}
 
-		glBindVertexArray(VAO); {
-		//Model 1
-		model = glm::lookAt(vec3(0.f), vec3(rotationCubes, rotationCubes*0.5f, 0), CubesPositionBuffer[0]);
-		glUniformMatrix4fv(glGetUniformLocation(coordsShader.Program, "model"), 1, GL_FALSE, value_ptr(model));
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+		//glBindVertexArray(VAO); {
+		////Model 1
+		//model = glm::lookAt(vec3(0.f), vec3(rotationCubes, rotationCubes*0.5f, 0), CubesPositionBuffer[0]);
+		//glUniformMatrix4fv(glGetUniformLocation(coordsShader.Program, "model"), 1, GL_FALSE, value_ptr(model));
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		//glDrawArrays(GL_TRIANGLES, 0, 36);
 
-		//Model 2
-		model = glm::lookAt(vec3(0.f), vec3(rotationCubes, rotationCubes*0.5f, 0), CubesPositionBuffer[1]);
-		glUniformMatrix4fv(glGetUniformLocation(coordsShader.Program, "model"), 1, GL_FALSE, value_ptr(model));
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+		////Model 2
+		//model = glm::lookAt(vec3(0.f), vec3(rotationCubes, rotationCubes*0.5f, 0), CubesPositionBuffer[1]);
+		//glUniformMatrix4fv(glGetUniformLocation(coordsShader.Program, "model"), 1, GL_FALSE, value_ptr(model));
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		//glDrawArrays(GL_TRIANGLES, 0, 36);
 
-		}
+		//}
 
 		
 
@@ -366,22 +407,22 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	if (key == GLFW_KEY_2) {
 		textOpacity = 0;
 	}
-	if (key == GLFW_KEY_W) {
+	if (key == GLFW_KEY_I) {
 		rotationX -= 10.0f;
 	}
-	if (key == GLFW_KEY_S) {
+	if (key == GLFW_KEY_K) {
 		rotationX += 10.0f;
 	}
-	if (key == GLFW_KEY_A) {
+	if (key == GLFW_KEY_J) {
 		rotationY += 10.0f;
 	}
-	if (key == GLFW_KEY_D) {
+	if (key == GLFW_KEY_F) {
 		rotationY -= 10.0f;
 	}
-	if (key == GLFW_KEY_Q) {
+	if (key == GLFW_KEY_U) {
 		rotationZ += 10.0f;
 	}
-	if (key == GLFW_KEY_E) {
+	if (key == GLFW_KEY_O) {
 		rotationZ -= 10.0f;
 	}
 
