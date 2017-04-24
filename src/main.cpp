@@ -74,19 +74,19 @@ int main() {
 	Shader coordsShader("./src/coordsVertex.vertexshader", "./src/coordsFragment.fragmentshader");
 
 
+
 	//Camara -----------------
 	float aspectRatio = 16.0f / 9.0f;
 	float FOV = 60.0f;
 	mat4 proj = glm::perspective(glm::radians(FOV), aspectRatio, 0.1f, 100.0f);
-	mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -2.f));
-	/*glm::mat4 view = glm::lookAt(
-		glm::vec3(1.0f, 1.0f, 1.5f),
+	//mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -3.0f));
+	glm::mat4 view = glm::lookAt(
+		glm::vec3(3.f, 3.f, 3.f),
 		glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3(0.0f, 0.0f, 0.5f)
-	);*/
-
-
+	);
 	mat4 model;
+	//------------------------
 
 
 	mat4 scaleTrans;
@@ -95,7 +95,6 @@ int main() {
 	mat4 translationTrans;
 	//translationTrans = glm::translate(translationTrans, vec3(0.0f, 0.0f, 0.0f));
 	translationTrans = glm::translate(translationTrans, vec3(0.0f, 0.0f, 0.0f));//
-
 
 
 	mat4 rotationTransX;
@@ -114,7 +113,6 @@ int main() {
 	GLuint VAO;
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
-	
 
 	GLuint VBO;
 	glGenBuffers(1, &VBO);
@@ -178,8 +176,7 @@ int main() {
 	};
 
 	//---
-
-
+	
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(VertexBufferCube), VertexBufferCube, GL_STATIC_DRAW);
 
@@ -196,6 +193,9 @@ int main() {
 
 	glfwSetKeyCallback(window, key_callback);
 
+
+
+	//Texturas-------------------------------------------------------------------------------------------------------
 	GLuint texture1;
 	glGenTextures(1, &texture1);
 	glBindTexture(GL_TEXTURE_2D, texture1);
@@ -217,7 +217,6 @@ int main() {
 	glGenTextures(1, &texture2);
 	glBindTexture(GL_TEXTURE_2D, texture2);
 
-
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 
@@ -227,6 +226,8 @@ int main() {
 	image = SOIL_load_image("./src/texture.png", &textureWidth, &textureHeight, 0, SOIL_LOAD_RGB);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, textureWidth, textureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
 	SOIL_free_image_data(image);
+
+	//----------------------------------------------------------------------------------------------------------------
 
 	//glBindVertexArray(0);
 
@@ -243,13 +244,10 @@ int main() {
 		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
 		glBindVertexArray(VAO);
 
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
-
-
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture1);
@@ -258,7 +256,6 @@ int main() {
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, texture2);
 		glUniform1i(glGetUniformLocation(textureShader.Program, "Texture2"), 1);
-
 
 		rotationTransX = glm::rotate(translationTrans, glm::radians(rotationX), vec3(1.0, 0.0, 0.0f));
 		GLint roTransX = glGetUniformLocation(textureShader.Program, "rotationTransX");
@@ -272,20 +269,17 @@ int main() {
 		GLint roTransZ = glGetUniformLocation(textureShader.Program, "rotationTransZ");
 		glUniformMatrix4fv(roTransZ, 1, GL_FALSE, glm::value_ptr(rotationTransZ));
 
-
 		GLint scTrans = glGetUniformLocation(textureShader.Program, "scaleTrans");
 		glUniformMatrix4fv(scTrans, 1, GL_FALSE, glm::value_ptr(scaleTrans));
 
 		GLint trTrans = glGetUniformLocation(textureShader.Program, "translationTrans");
 		glUniformMatrix4fv(trTrans, 1, GL_FALSE, glm::value_ptr(translationTrans));
 
-		//Plano
 		GLint roPlane = glGetUniformLocation(textureShader.Program, "rotatePlane");
 		glUniformMatrix4fv(scTrans, 1, GL_FALSE, glm::value_ptr(rotatePlane));
 
 		GLint trPlane = glGetUniformLocation(textureShader.Program, "translatePlane");
 		glUniformMatrix4fv(trTrans, 1, GL_FALSE, glm::value_ptr(translatePlane));
-		//
 
 
 		//Camara--
@@ -299,9 +293,10 @@ int main() {
 		glUniformMatrix4fv(uniMode, 1, GL_FALSE, glm::value_ptr(model));
 		//--
 
-
-
+		//triangleShader.USE();
 		textureShader.USE();
+		//coordsShader.USE();
+		
 		
 
 		if (textureMove) {
@@ -312,20 +307,20 @@ int main() {
 			glUniform1f(moveTex, textOpacity);
 		}
 
-		glBindVertexArray(VAO); {
-			////Model 1
-			model = glm::lookAt(vec3(0.f), vec3(rotationCubes, rotationCubes*0.5f, 0), CubesPositionBuffer[0]);
-			glUniformMatrix4fv(glGetUniformLocation(textureShader.Program, "model"), 1, GL_FALSE, value_ptr(model));
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			glDrawArrays(GL_TRIANGLES, 0, 36);
+		//glBindVertexArray(VAO); {
+		//	////Model 1
+		//	model = glm::lookAt(vec3(0.f), vec3(rotationCubes, rotationCubes*0.5f, 0), CubesPositionBuffer[0]);
+		//	glUniformMatrix4fv(glGetUniformLocation(textureShader.Program, "model"), 1, GL_FALSE, value_ptr(model));
+		//	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		//	glDrawArrays(GL_TRIANGLES, 0, 36);
 
-			//Model 2
-			model = glm::lookAt(vec3(0.f), vec3(rotationCubes, rotationCubes*0.5f, 0), CubesPositionBuffer[1]);
-			glUniformMatrix4fv(glGetUniformLocation(textureShader.Program, "model"), 1, GL_FALSE, value_ptr(model));
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			glDrawArrays(GL_TRIANGLES, 0, 36);
+		//	//Model 2
+		//	model = glm::lookAt(vec3(0.f), vec3(rotationCubes, rotationCubes*0.5f, 0), CubesPositionBuffer[1]);
+		//	glUniformMatrix4fv(glGetUniformLocation(textureShader.Program, "model"), 1, GL_FALSE, value_ptr(model));
+		//	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		//	glDrawArrays(GL_TRIANGLES, 0, 36);
 
-		}
+		//}
 
 		
 
@@ -364,12 +359,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	if (key == GLFW_KEY_DOWN && action == GLFW_PRESS) {
 		textureMove = false;
 		textOpacity -= 0.1;
-	}
-	if (key == GLFW_KEY_LEFT) {
-		rotationY += 10.0f;
-	}
-	if (key == GLFW_KEY_RIGHT) {
-		rotationY -= 10.0f;
 	}
 	if (key == GLFW_KEY_1) {
 		textOpacity = 1;

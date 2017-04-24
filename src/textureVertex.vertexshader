@@ -19,15 +19,11 @@ uniform mat4 rotationTransX;
 uniform mat4 rotationTransZ;
 
 
-uniform mat4 rotatePlane;
-uniform mat4 translatePlane;
-
 
 void main(){
 
 	TexCoord1 = texCoord1;
 	TexCoord2 = texCoord2;
-
 
     gl_Position = scaleTrans * translationTrans * rotationTransZ * rotationTransY * rotationTransX * vec4 (position, 1.0) ;
 

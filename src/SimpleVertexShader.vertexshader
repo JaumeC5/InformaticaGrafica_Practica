@@ -11,16 +11,6 @@ void main(){
 
 	positionMod = position;
 
-
-	if (position.y < 0 && position.x < 0){
-		positionMod.x -= angle;
-	}
-
-	if (position.y < 0 && position.x > 0){
-		positionMod.x += angle;
-	}
-
-
 	gl_Position = vec4 (positionMod.x, positionMod.y, positionMod.z, 1.0) ;
 	gl_Position.w = 2.0;
 
