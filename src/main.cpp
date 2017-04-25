@@ -32,12 +32,14 @@ float actualTime = glfwGetTime();
 float deltaTime;
 
 float cameraSpeed;
-float camSpeedConstant = 3.f;
+float camSpeedConstant;
 
 vec3 cameraPos(0,0,3);
-vec3 vecDir(0,0,0);
+vec3 initialDir(0,0,0);
+vec3 vecDir;
 vec3 vecRight;
 vec3 vecUp;
+vec3 vecFront(0, 0, -1);
 
 GLfloat radio = 8.0f;
 GLfloat X = sin(glfwGetTime()) * radio;
@@ -110,10 +112,15 @@ int main() {
 
 
 	//new
+	//view = camPos, camPos + vecFront, vecUp
+	vecDir = cameraPos - cameraPos  ;
+	vecDir = normalize(vecDir); //vecDir ya está normalizado.
+	
+	vecRight = cross(vecDir, vec3(0, 1, 0));
+	vecRight = normalize(vecRight);
 
-	
-	//mat4 matLookAt = glm::lookAt(vecRight, vecUp, vecDir); //nope?
-	
+	vecUp = cross(vecDir, vecRight);
+
 
 	//------------------------
 
@@ -330,7 +337,7 @@ int main() {
 
 		mat4 matLookAt = glm::lookAt(cameraPos, vecDir, vecUp);
 		cameraPos += vecDir * cameraSpeed;
-		cameraPos += cross(vecDir, vecUp) * cameraSpeed;
+		cameraPos += vecRight * cameraSpeed;
 
 		//----
 
@@ -424,6 +431,19 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	}
 	if (key == GLFW_KEY_O) {
 		rotationZ -= 10.0f;
+	}
+
+	if (key == GLFW_KEY_W) {
+		rotationY += 10.0f;
+	}
+	if (key == GLFW_KEY_S) {
+		rotationY -= 10.0f;
+	}
+	if (key == GLFW_KEY_A) {
+		rotationZ += 10.0f;
+	}
+	if (key == GLFW_KEY_D) {
+		camSpeedConstant -= 3.0f;
 	}
 
 }
