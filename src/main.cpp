@@ -14,6 +14,8 @@
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
 #include <gtc/type_ptr.hpp>
+#include <time.h>
+#include <chrono>
 
 using namespace glm;
 using namespace std;
@@ -44,6 +46,9 @@ vec3 vecFront(0, 0, -1);
 GLfloat radio = 8.0f;
 GLfloat X = sin(glfwGetTime()) * radio;
 GLfloat Z = cos(glfwGetTime()) * radio;
+
+float angleY = 5.f;
+float angleX = 5.f;
 
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
@@ -95,19 +100,11 @@ int main() {
 
 
 	//Camara -----------------
-	float aspectRatio = 16.0f / 9.0f;
-	float FOV = 60.0f;
-	mat4 proj = glm::perspective(glm::radians(FOV), aspectRatio, 0.1f, 100.0f);
+	float aspectRatio = 800.f / 600.0f;
+	float FOV = 50.0f;
+	mat4 proj = glm::perspective(glm::radians(FOV), aspectRatio, 1.0f, 100.0f);
 	//mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -3.0f));
-	/*
-	glm::mat4 view = glm::lookAt(
-		glm::vec3(3.f, 3.f, 3.f),
-		glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(0.0f, 0.0f, 0.5f)
-	);
-	*/
-	mat4 view;
-	view = glm::lookAt(glm::vec3(X, 0.0f, Z), vec3(0.0f, 0.0f, 0.0f), vec3(0.0, 1.0, 0.0));
+	mat4 view = glm::lookAt(glm::vec3(X, 0.0f, Z), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
 	mat4 model;
 
 
@@ -124,13 +121,8 @@ int main() {
 
 	//------------------------
 
-
-	mat4 scaleTrans;
-	scaleTrans = glm::scale(scaleTrans, vec3(0.5f, 0.5f, 0.0f));
-
 	mat4 translationTrans;
-	//translationTrans = glm::translate(translationTrans, vec3(0.0f, 0.0f, 0.0f));
-	translationTrans = glm::translate(translationTrans, vec3(0.0f, 0.0f, 0.0f));//
+	translationTrans = glm::translate(translationTrans, vec3(0.0f, 0.0f, 0.0f));
 
 
 	mat4 rotationTransX;
@@ -138,11 +130,6 @@ int main() {
 	mat4 rotationTransZ;
 	//rotationTransY = glm::rotate(translationTrans, glm::radians(50.0f), vec3(0.0, 0.0, 1.0f));
 
-	mat4 translatePlane;
-	translatePlane = glm::translate(translatePlane, vec3(0.0f, 0.0f, 0.0f));
-
-	mat4 rotatePlane;
-	rotatePlane = glm::rotate(translationTrans, glm::radians(50.0f), vec3(0.0, 0.0, 1.0f));
 
 
 
@@ -277,7 +264,7 @@ int main() {
 
 
 		glClear(GL_COLOR_BUFFER_BIT);
-		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+		glClearColor(0.2f, 0.2f, 0.4f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glBindVertexArray(VAO);
@@ -305,17 +292,7 @@ int main() {
 		GLint roTransZ = glGetUniformLocation(textureShader.Program, "rotationTransZ");
 		glUniformMatrix4fv(roTransZ, 1, GL_FALSE, glm::value_ptr(rotationTransZ));
 
-		GLint scTrans = glGetUniformLocation(textureShader.Program, "scaleTrans");
-		glUniformMatrix4fv(scTrans, 1, GL_FALSE, glm::value_ptr(scaleTrans));
 
-		GLint trTrans = glGetUniformLocation(textureShader.Program, "translationTrans");
-		glUniformMatrix4fv(trTrans, 1, GL_FALSE, glm::value_ptr(translationTrans));
-
-		GLint roPlane = glGetUniformLocation(textureShader.Program, "rotatePlane");
-		glUniformMatrix4fv(scTrans, 1, GL_FALSE, glm::value_ptr(rotatePlane));
-
-		GLint trPlane = glGetUniformLocation(textureShader.Program, "translatePlane");
-		glUniformMatrix4fv(trTrans, 1, GL_FALSE, glm::value_ptr(translatePlane));
 
 
 		//Camara--
@@ -355,23 +332,35 @@ int main() {
 			glUniform1f(moveTex, textOpacity);
 		}
 
-		//glBindVertexArray(VAO); {
-		////Model 1
-		//model = glm::lookAt(vec3(0.f), vec3(rotationCubes, rotationCubes*0.5f, 0), CubesPositionBuffer[0]);
-		//glUniformMatrix4fv(glGetUniformLocation(coordsShader.Program, "model"), 1, GL_FALSE, value_ptr(model));
-		//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		//glDrawArrays(GL_TRIANGLES, 0, 36);
 
-		////Model 2
-		//model = glm::lookAt(vec3(0.f), vec3(rotationCubes, rotationCubes*0.5f, 0), CubesPositionBuffer[1]);
-		//glUniformMatrix4fv(glGetUniformLocation(coordsShader.Program, "model"), 1, GL_FALSE, value_ptr(model));
-		//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		//glDrawArrays(GL_TRIANGLES, 0, 36);
-
-		//}
+		/*std::chrono::time_point<std::chrono::system_clock> now = std::chrono::system_clock::now();
+		std::chrono::time_point<std::chrono::system_clock> foo = now + std::chrono::milliseconds(100);
+		auto time = std::chrono::duration_cast<std::chrono::milliseconds>(foo - now);*/
 
 		
+		//cubo controlable
+		glm::mat4 trans, rot, rot1,  rot2;
+		trans = glm::translate(trans, CubesPositionBuffer[0]); 
+		rot1 = glm::rotate(rot, glm::radians(angleY), glm::vec3(0.0f, 1.f, 0.0f)); 
+		rot2 = glm::rotate(rot, glm::radians(angleX), glm::vec3(1.0f, 0.f, 0.0f)); 
+		rot = rot1*rot2; 
+		model = trans * rot; 
+		glUniformMatrix4fv(uniMode, 1, GL_FALSE, glm::value_ptr(model)); 
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
 
+		//cubos independents
+		for (int i = 1; i < 10; i++) {
+			glm::mat4 trans, rot;
+			trans = glm::translate(trans, CubesPositionBuffer[i]);
+			rot = glm::rotate(rot, (-deltaTime)*glm::radians(180.f), glm::vec3(1.0f, 1.f, 0.0f)); 
+			model = trans * rot;
+			glUniformMatrix4fv(uniMode, 1, GL_FALSE, glm::value_ptr(model));
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+		}
+
+	
 		glBindVertexArray(0);
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -433,7 +422,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		rotationZ -= 10.0f;
 	}
 
-	if (key == GLFW_KEY_W) {
+	/*if (key == GLFW_KEY_W) {
 		rotationY += 10.0f;
 	}
 	if (key == GLFW_KEY_S) {
@@ -441,7 +430,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	}
 	if (key == GLFW_KEY_A) {
 		rotationZ += 10.0f;
-	}
+	}*/
 	if (key == GLFW_KEY_D) {
 		camSpeedConstant -= 3.0f;
 	}
