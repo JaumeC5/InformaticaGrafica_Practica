@@ -21,7 +21,6 @@ using namespace glm;
 using namespace std;
 
 const GLint WIDTH = 800, HEIGHT = 600;
-bool WIDEFRAME = false;
 bool textureMove;
 float textOpacity = 0.9;
 float rotationX = 0.0;
@@ -30,8 +29,9 @@ float rotationZ = 0.0;
 float rotationCubes = 0.f;
 
 float lastFrame;
-float actualTime = glfwGetTime();
+float actualTime;
 float deltaTime;
+float tmpTime;
 
 float cameraSpeed;
 float camSpeedConstant;
@@ -47,8 +47,8 @@ GLfloat radio = 8.0f;
 GLfloat X = sin(glfwGetTime()) * radio;
 GLfloat Z = cos(glfwGetTime()) * radio;
 
-float angleY = 5.f;
-float angleX = 5.f;
+float angleY = 1.f;
+float angleX = 1.f;
 
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
@@ -91,15 +91,13 @@ int main() {
 	glClear(GL_COLOR_BUFFER_BIT);
 	glClearColor(0, 0, 0, 0);
 
-	
-
 	Shader triangleShader("./src/SimpleVertexShader.vertexshader", "./src/SimpleFragmentShader.fragmentshader");
 	Shader textureShader("./src/textureVertex.vertexshader", "./src/textureFragment.fragmentshader");
 	Shader coordsShader("./src/coordsVertex.vertexshader", "./src/coordsFragment.fragmentshader");
 
 
 
-	//Camara -----------------
+	//Camara----------------------------------------------------------------------------------------------------------------------C
 	float aspectRatio = 800.f / 600.0f;
 	float FOV = 50.0f;
 	mat4 proj = glm::perspective(glm::radians(FOV), aspectRatio, 1.0f, 100.0f);
@@ -108,6 +106,7 @@ int main() {
 	mat4 model;
 
 
+	//Movimiento Camara-----------------------------------------------------------------------------------------------------------MC
 	//new
 	//view = camPos, camPos + vecFront, vecUp
 	vecDir = cameraPos - cameraPos  ;
@@ -119,7 +118,7 @@ int main() {
 	vecUp = cross(vecDir, vecRight);
 
 
-	//------------------------
+	//Rotation & Translation-----------------------------------------------------------------------------------------------------R&T
 
 	mat4 translationTrans;
 	translationTrans = glm::translate(translationTrans, vec3(0.0f, 0.0f, 0.0f));
@@ -132,14 +131,13 @@ int main() {
 
 
 
-
+	//VAO & VBO------------------------------------------------------------------------------------------------------------------V&V
 	GLuint VAO;
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
 
 	GLuint VBO;
 	glGenBuffers(1, &VBO);
-
 
 	GLfloat VertexBufferCube[] = {
 		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
@@ -197,28 +195,16 @@ int main() {
 		vec3(1.5f ,  0.2f, -1.5f),
 		vec3(-1.3f,  1.0f, -1.5f)
 	};
-
-	//---
 	
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(VertexBufferCube), VertexBufferCube, GL_STATIC_DRAW);
-
-
-	glBindTexture(GL_TEXTURE_2D, 0);
-
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GL_FLOAT), (GLvoid*)0);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GL_FLOAT), (GLvoid*)( 3 * sizeof(GL_FLOAT)));
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 
-
-
-	glfwSetKeyCallback(window, key_callback);
-
-
-
-	//Texturas-------------------------------------------------------------------------------------------------------
+	//Texturas---------------------------------------------------------------------------------------------------------------Texturas
 	GLuint texture1;
 	glGenTextures(1, &texture1);
 	glBindTexture(GL_TEXTURE_2D, texture1);
@@ -250,18 +236,14 @@ int main() {
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, textureWidth, textureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
 	SOIL_free_image_data(image);
 
-	//----------------------------------------------------------------------------------------------------------------
-
-	//glBindVertexArray(0);
-
+	//--
 	GLint variableShader = glGetUniformLocation(triangleShader.Program, "angle");
 	GLint moveTex = glGetUniformLocation(textureShader.Program, "opacity");
 
+	glfwSetKeyCallback(window, key_callback);
 
-
+	//While-------------------------------------------------------------------------------------------------------------------While
 	while (!glfwWindowShouldClose(window)) {
-
-
 
 		glClear(GL_COLOR_BUFFER_BIT);
 		glClearColor(0.2f, 0.2f, 0.4f, 1.0f);
@@ -294,7 +276,6 @@ int main() {
 
 
 
-
 		//Camara--
 		GLint uniView = glGetUniformLocation(coordsShader.Program, "view");
 		glUniformMatrix4fv(uniView, 1, GL_FALSE, glm::value_ptr(view));
@@ -304,75 +285,62 @@ int main() {
 
 		GLint uniMode = glGetUniformLocation(coordsShader.Program, "model");
 		glUniformMatrix4fv(uniMode, 1, GL_FALSE, glm::value_ptr(model));
-		//--
-		//new--
 		
-		deltaTime = actualTime - lastFrame;
+		//Delta time
+		actualTime = glfwGetTime();
+		tmpTime = actualTime - lastFrame;
+		deltaTime += tmpTime;
 		lastFrame = actualTime;
+		
+		//Movimiento Camara
 		cameraSpeed = camSpeedConstant * deltaTime;
-
 
 		mat4 matLookAt = glm::lookAt(cameraPos, vecDir, vecUp);
 		cameraPos += vecDir * cameraSpeed;
 		cameraPos += vecRight * cameraSpeed;
 
-		//----
 
-		//triangleShader.USE();
-		textureShader.USE();
-		//coordsShader.USE();
+	
 		
-		
+		//Opacidad texturas
+		if (textureMove) {glUniform1f(moveTex, textOpacity);}
+		else if (!textureMove) {glUniform1f(moveTex, textOpacity);}
 
-		if (textureMove) {
-			glUniform1f(moveTex, textOpacity);
-		}
-
-		else if (!textureMove) {
-			glUniform1f(moveTex, textOpacity);
-		}
-
-
-		/*std::chrono::time_point<std::chrono::system_clock> now = std::chrono::system_clock::now();
-		std::chrono::time_point<std::chrono::system_clock> foo = now + std::chrono::milliseconds(100);
-		auto time = std::chrono::duration_cast<std::chrono::milliseconds>(foo - now);*/
-
-		
-		//cubo controlable
-		glm::mat4 trans, rot, rot1,  rot2;
+		//Cubo central
+		glm::mat4 trans, rot, rot1,  rot2, rot3;
 		trans = glm::translate(trans, CubesPositionBuffer[0]); 
-		rot1 = glm::rotate(rot, glm::radians(angleY), glm::vec3(0.0f, 1.f, 0.0f)); 
-		rot2 = glm::rotate(rot, glm::radians(angleX), glm::vec3(1.0f, 0.f, 0.0f)); 
-		rot = rot1*rot2; 
+		rot1 = glm::rotate(rot, glm::radians(rotationX), glm::vec3(1.0f, 0.f, 0.0f)); 
+		rot2 = glm::rotate(rot, glm::radians(rotationY), glm::vec3(0.0f, 1.0f, 0.0f)); 
+		rot3 = glm::rotate(rot, glm::radians(rotationZ), glm::vec3(0.0f, 0.f, 1.0f));
+		rot = rot1*rot2*rot3; 
 		model = trans * rot; 
 		glUniformMatrix4fv(uniMode, 1, GL_FALSE, glm::value_ptr(model)); 
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
-		//cubos independents
+		//Resto de cubos
 		for (int i = 1; i < 10; i++) {
 			glm::mat4 trans, rot;
 			trans = glm::translate(trans, CubesPositionBuffer[i]);
-			rot = glm::rotate(rot, (-deltaTime)*glm::radians(180.f), glm::vec3(1.0f, 1.f, 0.0f)); 
+			rot = glm::rotate(rot, deltaTime * 0.1f * glm::radians(180.f), glm::vec3(0.3f, 1.0f, 0.0f)); 
 			model = trans * rot;
 			glUniformMatrix4fv(uniMode, 1, GL_FALSE, glm::value_ptr(model));
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 		}
 
-	
+		//triangleShader.USE();
+		textureShader.USE();
+		//coordsShader.USE();
+
 		glBindVertexArray(0);
 		glfwSwapBuffers(window);
 		glfwPollEvents();
-
 	}
-
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
-	
 	glDeleteTextures(1, &texture1);
 	glDeleteTextures(1, &texture2);
-
 	exit(EXIT_SUCCESS);
 }
 
@@ -381,19 +349,12 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GL_TRUE);
 
-	if (key == GLFW_KEY_P && action == GLFW_PRESS) {
-		if (WIDEFRAME) {
-			WIDEFRAME = false;
-		}
-		else { WIDEFRAME = true; }
-	}
-
-	if (key == GLFW_KEY_UP && action == GLFW_PRESS) {
+	//Opacidad texturas
+	if (key == GLFW_KEY_UP /*&& action == GLFW_PRESS*/) {
 		textureMove = true;
 		textOpacity += 0.1;
 	}
-
-	if (key == GLFW_KEY_DOWN && action == GLFW_PRESS) {
+	if (key == GLFW_KEY_DOWN /*&& action == GLFW_PRESS*/) {
 		textureMove = false;
 		textOpacity -= 0.1;
 	}
@@ -403,6 +364,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	if (key == GLFW_KEY_2) {
 		textOpacity = 0;
 	}
+	//Rotacion cubo central
 	if (key == GLFW_KEY_I) {
 		rotationX -= 10.0f;
 	}
@@ -412,7 +374,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	if (key == GLFW_KEY_J) {
 		rotationY += 10.0f;
 	}
-	if (key == GLFW_KEY_F) {
+	if (key == GLFW_KEY_L) {
 		rotationY -= 10.0f;
 	}
 	if (key == GLFW_KEY_U) {
@@ -421,15 +383,15 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	if (key == GLFW_KEY_O) {
 		rotationZ -= 10.0f;
 	}
-
+	//Camara
 	/*if (key == GLFW_KEY_W) {
-		rotationY += 10.0f;
+	
 	}
 	if (key == GLFW_KEY_S) {
-		rotationY -= 10.0f;
+		
 	}
 	if (key == GLFW_KEY_A) {
-		rotationZ += 10.0f;
+	
 	}*/
 	if (key == GLFW_KEY_D) {
 		camSpeedConstant -= 3.0f;
