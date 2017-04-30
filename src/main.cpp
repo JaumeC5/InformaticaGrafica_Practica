@@ -31,21 +31,24 @@ float rotationCubes = 0.f;
 float lastFrame;
 float actualTime;
 float deltaTime;
-float tmpTime;
 
-float cameraSpeed;
+float cameraSpeed = 0.05f;
 float camSpeedConstant;
 
-vec3 cameraPos(0,0,3);
-vec3 initialDir(0,0,0);
-vec3 vecDir;
-vec3 vecRight;
-vec3 vecUp;
-vec3 vecFront(0, 0, -1);
+//Movimiento camera
+vec3 camPos = vec3(0.0f, 0.0f, 3.0f);
+vec3 camTarget = vec3(0.0f, 0.0f, 0.0f);
+vec3 camDirection = normalize(camPos - camTarget);
+vec3 vecUp = vec3(0.0f, 1.0f, 0.0f);
+vec3 camRight = normalize(cross(vecUp, camDirection));
+vec3 camUp = cross(camDirection, camRight);
+vec3 camFront = vec3(0.0f, 0.0f, -1.0f);
 
-GLfloat radio = 8.0f;
-GLfloat X = sin(glfwGetTime()) * radio;
-GLfloat Z = cos(glfwGetTime()) * radio;
+GLfloat radio = 10.0f;
+GLfloat camX = sin(glfwGetTime()) * radio;
+GLfloat camZ = cos(glfwGetTime()) * radio;
+
+
 
 float angleY = 1.f;
 float angleX = 1.f;
@@ -96,26 +99,19 @@ int main() {
 	Shader coordsShader("./src/coordsVertex.vertexshader", "./src/coordsFragment.fragmentshader");
 
 
+	//Movimiento Camara-----------------------------------------------------------------------------------------------------------MC
+	
 
+
+	
 	//Camara----------------------------------------------------------------------------------------------------------------------C
 	float aspectRatio = 800.f / 600.0f;
-	float FOV = 50.0f;
+	float FOV = 45.0f;
 	mat4 proj = glm::perspective(glm::radians(FOV), aspectRatio, 1.0f, 100.0f);
 	//mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -3.0f));
-	mat4 view = glm::lookAt(glm::vec3(X, 0.0f, Z), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
+	//mat4 view = glm::lookAt(glm::vec3(camX, 0.0f, camZ), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
+	mat4 view = glm::lookAt(camPos, camPos + camFront, camUp);
 	mat4 model;
-
-
-	//Movimiento Camara-----------------------------------------------------------------------------------------------------------MC
-	//new
-	//view = camPos, camPos + vecFront, vecUp
-	vecDir = cameraPos - cameraPos  ;
-	vecDir = normalize(vecDir); //vecDir ya está normalizado.
-	
-	vecRight = cross(vecDir, vec3(0, 1, 0));
-	vecRight = normalize(vecRight);
-
-	vecUp = cross(vecDir, vecRight);
 
 
 	//Rotation & Translation-----------------------------------------------------------------------------------------------------R&T
@@ -240,7 +236,7 @@ int main() {
 	GLint variableShader = glGetUniformLocation(triangleShader.Program, "angle");
 	GLint moveTex = glGetUniformLocation(textureShader.Program, "opacity");
 
-	glfwSetKeyCallback(window, key_callback);
+
 
 	//While-------------------------------------------------------------------------------------------------------------------While
 	while (!glfwWindowShouldClose(window)) {
@@ -275,29 +271,25 @@ int main() {
 		glUniformMatrix4fv(roTransZ, 1, GL_FALSE, glm::value_ptr(rotationTransZ));
 
 
-
 		//Camara--
 		GLint uniView = glGetUniformLocation(coordsShader.Program, "view");
 		glUniformMatrix4fv(uniView, 1, GL_FALSE, glm::value_ptr(view));
-
 		GLint uniProj = glGetUniformLocation(coordsShader.Program, "proj");
 		glUniformMatrix4fv(uniProj, 1, GL_FALSE, glm::value_ptr(proj));
-
 		GLint uniMode = glGetUniformLocation(coordsShader.Program, "model");
 		glUniformMatrix4fv(uniMode, 1, GL_FALSE, glm::value_ptr(model));
 		
 		//Delta time
 		actualTime = glfwGetTime();
-		tmpTime = actualTime - lastFrame;
-		deltaTime += tmpTime;
+		deltaTime = actualTime - lastFrame;
 		lastFrame = actualTime;
 		
 		//Movimiento Camara
-		cameraSpeed = camSpeedConstant * deltaTime;
+		//cameraSpeed = camSpeedConstant * deltaTime;
 
-		mat4 matLookAt = glm::lookAt(cameraPos, vecDir, vecUp);
-		cameraPos += vecDir * cameraSpeed;
-		cameraPos += vecRight * cameraSpeed;
+		//mat4 matLookAt = glm::lookAt(cameraPos, vecDir, vecUp);
+		//cameraPos += vecDir * cameraSpeed;
+		//cameraPos += vecRight * cameraSpeed;
 
 
 	
@@ -307,12 +299,13 @@ int main() {
 		else if (!textureMove) {glUniform1f(moveTex, textOpacity);}
 
 		//Cubo central
-		glm::mat4 trans, rot, rot1,  rot2, rot3;
+		glm::mat4 trans, rot, rotX,  rotY, rotZ;
 		trans = glm::translate(trans, CubesPositionBuffer[0]); 
-		rot1 = glm::rotate(rot, glm::radians(rotationX), glm::vec3(1.0f, 0.f, 0.0f)); 
-		rot2 = glm::rotate(rot, glm::radians(rotationY), glm::vec3(0.0f, 1.0f, 0.0f)); 
-		rot3 = glm::rotate(rot, glm::radians(rotationZ), glm::vec3(0.0f, 0.f, 1.0f));
-		rot = rot1*rot2*rot3; 
+		rotX = glm::rotate(rot, glm::radians(rotationX), glm::vec3(1.0f, 0.f, 0.0f)); 
+		rotY = glm::rotate(rot, glm::radians(rotationY), glm::vec3(0.0f, 1.0f, 0.0f)); 
+		rotZ = glm::rotate(rot, glm::radians(rotationZ), glm::vec3(0.0f, 0.f, 1.0f));
+		rot = rotX*rotY*rotZ; 
+		rotZ = glm::rotate(rot, glm::radians(rotationZ), glm::vec3(1.0f, 1.0f, 1.0f));
 		model = trans * rot; 
 		glUniformMatrix4fv(uniMode, 1, GL_FALSE, glm::value_ptr(model)); 
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -322,7 +315,7 @@ int main() {
 		for (int i = 1; i < 10; i++) {
 			glm::mat4 trans, rot;
 			trans = glm::translate(trans, CubesPositionBuffer[i]);
-			rot = glm::rotate(rot, deltaTime * 0.1f * glm::radians(180.f), glm::vec3(0.3f, 1.0f, 0.0f)); 
+			rot = glm::rotate(rot, actualTime * 0.1f * glm::radians(180.f), glm::vec3(0.3f, 1.0f, 0.0f)); 
 			model = trans * rot;
 			glUniformMatrix4fv(uniMode, 1, GL_FALSE, glm::value_ptr(model));
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -337,6 +330,8 @@ int main() {
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
+	glfwSetKeyCallback(window, key_callback);
+
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
 	glDeleteTextures(1, &texture1);
@@ -384,17 +379,17 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		rotationZ -= 10.0f;
 	}
 	//Camara
-	/*if (key == GLFW_KEY_W) {
-	
+	if (key == GLFW_KEY_W) {
+		camPos += cameraSpeed * camFront;
 	}
 	if (key == GLFW_KEY_S) {
-		
+		camPos -= cameraSpeed * camFront;
 	}
 	if (key == GLFW_KEY_A) {
-	
-	}*/
+		camPos -= normalize(cross(camFront, camUp)) * cameraSpeed;
+	}
 	if (key == GLFW_KEY_D) {
-		camSpeedConstant -= 3.0f;
+		camPos += normalize(cross(camFront, camUp)) * cameraSpeed;
 	}
 
 }

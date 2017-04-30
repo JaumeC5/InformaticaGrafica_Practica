@@ -12,7 +12,7 @@ void main(){
 	positionMod = position;
 
 	gl_Position = vec4 (positionMod.x, positionMod.y, positionMod.z, 1.0) ;
-	gl_Position.w = 2.0;
+
 
 
 	 
