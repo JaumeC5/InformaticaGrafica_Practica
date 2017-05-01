@@ -55,6 +55,7 @@ float angleX = 1.f;
 
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
+void do_movement(GLFWwindow* window);
 
 
 int main() {
@@ -75,7 +76,9 @@ int main() {
 		exit(EXIT_FAILURE);
 	}
 
+	int key;
 	glfwMakeContextCurrent(window);
+	int status = glfwGetKey(window, key);
 
 	glewExperimental = GL_TRUE;
 	if (GLEW_OK != glewInit()) {
@@ -83,6 +86,8 @@ int main() {
 		glfwTerminate();
 		return NULL;
 	}
+
+	glfwSetKeyCallback(window, key_callback);
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -110,7 +115,7 @@ int main() {
 	mat4 proj = glm::perspective(glm::radians(FOV), aspectRatio, 1.0f, 100.0f);
 	//mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -3.0f));
 	//mat4 view = glm::lookAt(glm::vec3(camX, 0.0f, camZ), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
-	mat4 view = glm::lookAt(camPos, camPos + camFront, camUp);
+	
 	mat4 model;
 
 
@@ -272,6 +277,8 @@ int main() {
 
 
 		//Camara--
+		mat4 view = glm::lookAt(camPos, camPos + camFront, camUp);
+
 		GLint uniView = glGetUniformLocation(coordsShader.Program, "view");
 		glUniformMatrix4fv(uniView, 1, GL_FALSE, glm::value_ptr(view));
 		GLint uniProj = glGetUniformLocation(coordsShader.Program, "proj");
@@ -330,7 +337,6 @@ int main() {
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
-	glfwSetKeyCallback(window, key_callback);
 
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
@@ -392,6 +398,13 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		camPos += normalize(cross(camFront, camUp)) * cameraSpeed;
 	}
 
+}
+
+
+
+
+void doMovement(GLFWwindow* window) {
+	
 }
 
 
