@@ -32,7 +32,7 @@ float lastFrame;
 float actualTime;
 float deltaTime;
 
-float cameraSpeed = 0.05f;
+float cameraSpeed = 0.01f;
 float camSpeedConstant;
 
 //Movimiento camera
@@ -55,7 +55,8 @@ float angleX = 1.f;
 
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
-void do_movement(GLFWwindow* window);
+void doMovement(GLFWwindow* window);
+bool status[1024];
 
 
 int main() {
@@ -76,9 +77,8 @@ int main() {
 		exit(EXIT_FAILURE);
 	}
 
-	int key;
+	
 	glfwMakeContextCurrent(window);
-	int status = glfwGetKey(window, key);
 
 	glewExperimental = GL_TRUE;
 	if (GLEW_OK != glewInit()) {
@@ -277,6 +277,7 @@ int main() {
 
 
 		//Camara--
+		doMovement(window);
 		mat4 view = glm::lookAt(camPos, camPos + camFront, camUp);
 
 		GLint uniView = glGetUniformLocation(coordsShader.Program, "view");
@@ -384,18 +385,11 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	if (key == GLFW_KEY_O) {
 		rotationZ -= 10.0f;
 	}
-	//Camara
-	if (key == GLFW_KEY_W) {
-		camPos += cameraSpeed * camFront;
+	if (action == GLFW_PRESS) {
+		status[key] = true;
 	}
-	if (key == GLFW_KEY_S) {
-		camPos -= cameraSpeed * camFront;
-	}
-	if (key == GLFW_KEY_A) {
-		camPos -= normalize(cross(camFront, camUp)) * cameraSpeed;
-	}
-	if (key == GLFW_KEY_D) {
-		camPos += normalize(cross(camFront, camUp)) * cameraSpeed;
+	else if (action == GLFW_RELEASE) {
+		status[key] = false;
 	}
 
 }
@@ -404,7 +398,18 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 
 void doMovement(GLFWwindow* window) {
-	
+	if (status[GLFW_KEY_W]) {
+		camPos += cameraSpeed * camFront;
+	}
+	if (status[GLFW_KEY_S]) {
+		camPos -= cameraSpeed * camFront;
+	}
+	if (status[GLFW_KEY_A]) {
+		camPos -= normalize(cross(camFront, camUp)) * cameraSpeed;
+	}
+	if (status[GLFW_KEY_D]) {
+		camPos += normalize(cross(camFront, camUp)) * cameraSpeed;
+	}
 }
 
 
