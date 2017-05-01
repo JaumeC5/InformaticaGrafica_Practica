@@ -101,18 +101,12 @@ int main() {
 	glClear(GL_COLOR_BUFFER_BIT);
 	glClearColor(0, 0, 0, 0);
 
-	Shader triangleShader("./src/SimpleVertexShader.vertexshader", "./src/SimpleFragmentShader.fragmentshader");
-	Shader textureShader("./src/textureVertex.vertexshader", "./src/textureFragment.fragmentshader");
-	Shader coordsShader("./src/coordsVertex.vertexshader", "./src/coordsFragment.fragmentshader");
-
-
-	//Movimiento Camara-----------------------------------------------------------------------------------------------------------MC
+	Shader projectShader("./src/projectVertex.vertexshader", "./src/projectFragment.fragmentshader");
 	
 	
 	//Camara----------------------------------------------------------------------------------------------------------------------C
 	float aspectRatio = WIDTH / HEIGHT;
 	mat4 model;
-
 
 	//Rotation & Translation-----------------------------------------------------------------------------------------------------R&T
 
@@ -124,8 +118,6 @@ int main() {
 	mat4 rotationTransY;
 	mat4 rotationTransZ;
 	//rotationTransY = glm::rotate(translationTrans, glm::radians(50.0f), vec3(0.0, 0.0, 1.0f));
-
-
 
 	//VAO & VBO------------------------------------------------------------------------------------------------------------------V&V
 	GLuint VAO;
@@ -233,8 +225,7 @@ int main() {
 	SOIL_free_image_data(image);
 
 	//--
-	GLint variableShader = glGetUniformLocation(triangleShader.Program, "angle");
-	GLint moveTex = glGetUniformLocation(textureShader.Program, "opacity");
+	GLint moveTex = glGetUniformLocation(projectShader.Program, "opacity");
 
 
 
@@ -255,23 +246,11 @@ int main() {
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture1);
-		glUniform1i(glGetUniformLocation(textureShader.Program, "Texture1"), 0);
+		glUniform1i(glGetUniformLocation(projectShader.Program, "Texture1"), 0);
 
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, texture2);
-		glUniform1i(glGetUniformLocation(textureShader.Program, "Texture2"), 1);
-
-		rotationTransX = glm::rotate(translationTrans, glm::radians(rotationX), vec3(1.0, 0.0, 0.0f));
-		GLint roTransX = glGetUniformLocation(textureShader.Program, "rotationTransX");
-		glUniformMatrix4fv(roTransX, 1, GL_FALSE, glm::value_ptr(rotationTransX));
-
-		rotationTransY = glm::rotate(translationTrans, glm::radians(rotationY), vec3(0.0, 0.0, 1.0f));
-		GLint roTransY = glGetUniformLocation(textureShader.Program, "rotationTransY");
-		glUniformMatrix4fv(roTransY, 1, GL_FALSE, glm::value_ptr(rotationTransY));
-
-		rotationTransZ = glm::rotate(translationTrans, glm::radians(rotationZ), vec3(0.0, 1.0, 0.0f));
-		GLint roTransZ = glGetUniformLocation(textureShader.Program, "rotationTransZ");
-		glUniformMatrix4fv(roTransZ, 1, GL_FALSE, glm::value_ptr(rotationTransZ));
+		glUniform1i(glGetUniformLocation(projectShader.Program, "Texture2"), 1);
 
 
 		//Camara view & proyection
@@ -280,11 +259,11 @@ int main() {
 
 
 		//Get uniform location
-		GLint uniView = glGetUniformLocation(coordsShader.Program, "view");
+		GLint uniView = glGetUniformLocation(projectShader.Program, "view");
 		glUniformMatrix4fv(uniView, 1, GL_FALSE, glm::value_ptr(view));
-		GLint uniProj = glGetUniformLocation(coordsShader.Program, "proj");
+		GLint uniProj = glGetUniformLocation(projectShader.Program, "proj");
 		glUniformMatrix4fv(uniProj, 1, GL_FALSE, glm::value_ptr(proj));
-		GLint uniMode = glGetUniformLocation(coordsShader.Program, "model");
+		GLint uniMode = glGetUniformLocation(projectShader.Program, "model");
 		glUniformMatrix4fv(uniMode, 1, GL_FALSE, glm::value_ptr(model));
 		
 		//Delta time
@@ -321,9 +300,7 @@ int main() {
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 		}
 
-		//triangleShader.USE();
-		textureShader.USE();
-		//coordsShader.USE();
+		projectShader.USE();
 
 		glBindVertexArray(0);
 		glfwSwapBuffers(window);
@@ -342,11 +319,11 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		glfwSetWindowShouldClose(window, GL_TRUE);
 
 	//Opacidad texturas
-	if (key == GLFW_KEY_UP /*&& action == GLFW_PRESS*/) {
+	if (key == GLFW_KEY_UP && action == GLFW_PRESS) {
 		textureMove = true;
 		textOpacity += 0.1;
 	}
-	if (key == GLFW_KEY_DOWN /*&& action == GLFW_PRESS*/) {
+	if (key == GLFW_KEY_DOWN && action == GLFW_PRESS) {
 		textureMove = false;
 		textOpacity -= 0.1;
 	}

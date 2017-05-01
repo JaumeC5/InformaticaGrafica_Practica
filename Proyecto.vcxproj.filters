@@ -26,24 +26,15 @@
     <ClInclude Include="src\Shader.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Archivos de recursos</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\SimpleVertexShader.vertexshader">
+    <None Include="src\projectFragment.fragmentshader">
       <Filter>Archivos de recursos</Filter>
     </None>
-    <None Include="src\SimpleFragmentShader.fragmentshader">
-      <Filter>Archivos de recursos</Filter>
-    </None>
-    <None Include="src\textureFragment.fragmentshader">
-      <Filter>Archivos de recursos</Filter>
-    </None>
-    <None Include="src\textureVertex.vertexshader">
-      <Filter>Archivos de recursos</Filter>
-    </None>
-    <None Include="src\coordsFragment.fragmentshader">
-      <Filter>Archivos de recursos</Filter>
-    </None>
-    <None Include="src\coordsVertex.vertexshader">
+    <None Include="src\projectVertex.vertexshader">
       <Filter>Archivos de recursos</Filter>
     </None>
   </ItemGroup>

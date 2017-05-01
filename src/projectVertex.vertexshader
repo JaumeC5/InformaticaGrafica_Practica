@@ -1,0 +1,33 @@
+#version 330 core
+
+// Input vertex data, different for all executions of this shader.
+layout (location = 0) in vec3 position;
+layout (location = 1) in vec2 texCoord1;
+layout (location = 1) in vec2 texCoord2;
+
+out vec2 TexCoord1;
+out vec2 TexCoord2;
+
+uniform sampler2D Texture1;
+uniform sampler2D Texture2;
+
+
+uniform mat4 scaleTrans;
+uniform mat4 translationTrans;
+uniform mat4 rotationTransY;
+uniform mat4 rotationTransX;
+uniform mat4 rotationTransZ;
+
+uniform mat4 view;
+uniform mat4 proj;
+uniform mat4 model;
+
+void main(){
+
+	TexCoord1 = texCoord1;
+	TexCoord2 = texCoord2;
+
+    gl_Position = proj * view * model * vec4 (position, 1.0) ;
+
+}
+

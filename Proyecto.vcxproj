@@ -23,15 +23,12 @@
     <ClCompile Include="src\Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="src\Shader.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\coordsFragment.fragmentshader" />
-    <None Include="src\coordsVertex.vertexshader" />
-    <None Include="src\SimpleFragmentShader.fragmentshader" />
-    <None Include="src\SimpleVertexShader.vertexshader" />
-    <None Include="src\textureFragment.fragmentshader" />
-    <None Include="src\textureVertex.vertexshader" />
+    <None Include="src\projectFragment.fragmentshader" />
+    <None Include="src\projectVertex.vertexshader" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{3FC640D2-EFA2-403C-A406-DF29A85CFD5D}</ProjectGuid>
