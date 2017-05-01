@@ -44,8 +44,8 @@ vec3 camFront = vec3(0.0f, 0.0f, -1.0f);
 
 GLfloat yawCam = -90.f;
 GLfloat pitchCam = 0.0f;
-GLfloat lastX = WIDTH / 2.0;
-GLfloat lastY = HEIGHT / 2.0;
+GLfloat lastX = WIDTH / 2.0f;
+GLfloat lastY = HEIGHT / 2.0f;
 
 float FOV = 45.0f;
 
@@ -108,11 +108,9 @@ int main() {
 
 	//Movimiento Camara-----------------------------------------------------------------------------------------------------------MC
 	
-
-
 	
 	//Camara----------------------------------------------------------------------------------------------------------------------C
-	float aspectRatio = 800.f / 600.0f;
+	float aspectRatio = WIDTH / HEIGHT;
 	mat4 model;
 
 
@@ -412,13 +410,14 @@ void mouseMove(GLFWwindow* window, double xpos, double ypos) {
 	if (firstMouse) {
 		lastX = xpos;
 		lastY = ypos;
+		firstMouse = false;
 	}
 	GLfloat xoffset = xpos - lastX;
 	GLfloat yoffset = lastY - ypos;
 	lastX = xpos;
 	lastY = ypos;
 
-	GLfloat sensitivity = 0.0f;
+	GLfloat sensitivity = 0.03f;
 	xoffset *= sensitivity;
 	yoffset *= sensitivity;
 
@@ -433,15 +432,20 @@ void mouseMove(GLFWwindow* window, double xpos, double ypos) {
 	front.y = sin(glm::radians(pitchCam));
 	front.z = sin(glm::radians(yawCam)) * cos(glm::radians(pitchCam));
 	camFront = glm::normalize(front);
-	cout << camFront.x << endl;
+	cout << "Cam Front X: " << camFront.x << endl;
+	cout << "Cam Front Y: " << camFront.y << endl;
+	cout << "Cam Front Z: " << camFront.z << endl;
 }
 
 void mouseScroll(GLFWwindow* window, double xScroll, double yScroll) {
 
-	if (FOV >= 1.0f && FOV <= 60.0f)
-		FOV -= yScroll;
-	if (FOV <= 1.0f)
-		FOV = 1.0f;
-	if (FOV >= 60.0f)
-		FOV = 60.0f;
+	if (FOV >= 1.0f && FOV <= 60.0f) {	
+		FOV -= yScroll; 
+	}
+	if (FOV <= 1.0f) { 
+		FOV = 1.0f; 
+	}
+	if (FOV >= 60.0f) {
+		FOV = 60.0f; 
+	}
 }
