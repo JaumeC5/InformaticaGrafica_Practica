@@ -14,8 +14,6 @@
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
 #include <gtc/type_ptr.hpp>
-#include <time.h>
-#include <chrono>
 
 using namespace glm;
 using namespace std;
@@ -394,9 +392,9 @@ void mouseMove(GLFWwindow* window, double xpos, double ypos) {
 	lastX = xpos;
 	lastY = ypos;
 
-	GLfloat sensitivity = 0.03f;
-	xoffset *= sensitivity;
-	yoffset *= sensitivity;
+	GLfloat Sensitivity = 0.03f;
+	xoffset *= Sensitivity;
+	yoffset *= Sensitivity;
 
 	yawCam += xoffset;
 	pitchCam += yoffset;
@@ -409,9 +407,6 @@ void mouseMove(GLFWwindow* window, double xpos, double ypos) {
 	front.y = sin(glm::radians(pitchCam));
 	front.z = sin(glm::radians(yawCam)) * cos(glm::radians(pitchCam));
 	camFront = glm::normalize(front);
-	cout << "Cam Front X: " << camFront.x << endl;
-	cout << "Cam Front Y: " << camFront.y << endl;
-	cout << "Cam Front Z: " << camFront.z << endl;
 }
 
 void mouseScroll(GLFWwindow* window, double xScroll, double yScroll) {
