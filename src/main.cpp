@@ -29,9 +29,9 @@ float rotationZ = 0.0;
 GLfloat deltaTime;
 GLfloat lastFrame;
 
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 void mouseMove(GLFWwindow* window, double xpos, double ypos);
 void mouseScroll(GLFWwindow* window, double xScroll, double yScroll);
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 
 
 //bool status[1024];
@@ -213,6 +213,7 @@ int main() {
 	while (!glfwWindowShouldClose(window)) {
 	
 		glfwPollEvents();
+		cam.doMovement(window);
 
 		glClear(GL_COLOR_BUFFER_BIT);
 		glClearColor(0.2f, 0.2f, 0.4f, 1.0f);
@@ -249,9 +250,6 @@ int main() {
 		actualTime = glfwGetTime();
 		deltaTime = actualTime - lastFrame;
 		lastFrame = actualTime;
-		cout << actualTime << endl;
-		cout << deltaTime << endl;
-		cout << lastFrame << endl << endl;
 
 		//Opacidad texturas
 		if (textureMove) {glUniform1f(moveTex, textOpacity);}
@@ -349,3 +347,4 @@ void mouseMove(GLFWwindow* window, double xpos, double ypos) {
 void mouseScroll(GLFWwindow* window, double xScroll, double yScroll) {
 	cam.mouseScroll(window, xScroll, yScroll);
 }
+

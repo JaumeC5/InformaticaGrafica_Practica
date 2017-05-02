@@ -8,6 +8,7 @@
 #include <gtc/matrix_transform.hpp>
 #include <gtc/type_ptr.hpp>
 #include <vector>
+#include <iostream>
 
 using namespace glm;
 using namespace std;
@@ -36,6 +37,7 @@ private:
 
 public:
 	Camera(vec3 position, vec3 direction, GLfloat sensitivity, GLfloat fov);
+
 	void doMovement(GLFWwindow * window);
 	void mouseMove(GLFWwindow * window, double xpos, double ypos);
 	void mouseScroll(GLFWwindow * window, double xScroll, double yScroll);
@@ -46,6 +48,7 @@ public:
 	vec3 camDirection;
 	vec3 vecUp;
 	vec3 camRight;
+
 	
 };
 
@@ -65,7 +68,7 @@ Camera::Camera(vec3 position, vec3 direction, GLfloat sensitivity, GLfloat fov) 
 	camUp = cross(camDirection, camRight);
 	camFront = vec3(0.0f, 0.0f, -1.0f);
 
-	
+
 }
 
 void Camera::doMovement(GLFWwindow* window) {
@@ -83,6 +86,9 @@ void Camera::doMovement(GLFWwindow* window) {
 	if (status[GLFW_KEY_D]) {
 		camPos += normalize(cross(camFront, camUp)) * cameraSpeed;
 	}
+	cout << "camPos.x: " << camPos.x << endl;
+	cout << "camPos.y: " << camPos.y << endl;
+	cout << "camPos.z: " << camPos.z << endl;
 }
 
 void Camera::mouseMove(GLFWwindow* window, double xpos, double ypos) {
