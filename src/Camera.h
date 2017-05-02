@@ -4,38 +4,35 @@
 //GLFW
 #include <GLFW\glfw3.h>
 
-#include <iostream>
-#include <string>
-#include <fstream>
-#include <sstream>
-#include <math.h>
-#include <SOIL.h>
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
 #include <gtc/type_ptr.hpp>
+#include <vector>
 
 using namespace glm;
 using namespace std;
 
 #pragma once
 
+
+GLboolean status[1024];
+GLfloat actualTime;
+
+
 class Camera {
 private:
-	vec3 camPos = vec3(0.0f, 0.0f, 3.0f);
-	vec3 camFront = vec3(0.0f, 0.0f, -1.0f);
-	vec3 camUp = vec3(0.0f, 1.0f, 0.0f);
+	vec3 camPos;
+	vec3 camFront;
+	vec3 camUp;
 	GLfloat deltaTime;
 	GLfloat lastFrame;
 	GLfloat lastX = 400;
 	GLfloat lastY = 300;
-	GLfloat Sensitivity = 0.03f;
+	GLfloat sens;
 	GLboolean firstMouse = true;
 	GLfloat pitchCam = 0.0f;
 	GLfloat yawCam = -90.f;
-	GLfloat FOV = 45.0f;
-	
-	GLboolean status[1024];
-
+	GLfloat FOV;
 
 public:
 	Camera(vec3 position, vec3 direction, GLfloat sensitivity, GLfloat fov);
@@ -45,15 +42,21 @@ public:
 	mat4 LookAt();
 	GLfloat GetFOV();
 
-};
-
-Camera::Camera(vec3 position, vec3 direction, GLfloat sensitivity, GLfloat fov) {
-
 	vec3 camTarget;
 	vec3 camDirection;
 	vec3 vecUp;
 	vec3 camRight;
+	
+};
 
+Camera::Camera(vec3 position, vec3 direction, GLfloat sensitivity, GLfloat fov) {
+	//Constructor
+	camPos = position;
+	camDirection = direction;
+	sens = sensitivity;
+	FOV = fov;
+
+	//Camara
 	camPos = vec3(0.0f, 0.0f, 3.0f);
 	camTarget = vec3(0.0f, 0.0f, 0.0f);
 	camDirection = normalize(camPos - camTarget);
@@ -61,6 +64,7 @@ Camera::Camera(vec3 position, vec3 direction, GLfloat sensitivity, GLfloat fov) 
 	camRight = normalize(cross(vecUp, camDirection));
 	camUp = cross(camDirection, camRight);
 	camFront = vec3(0.0f, 0.0f, -1.0f);
+
 	
 }
 
@@ -124,10 +128,9 @@ void Camera::mouseScroll(GLFWwindow* window, double xScroll, double yScroll) {
 }
 
 mat4 Camera::LookAt() {
-
+	return lookAt(camPos, camPos + camFront, camUp);
 }
 
 GLfloat Camera::GetFOV() {
 	return FOV;
 }
-

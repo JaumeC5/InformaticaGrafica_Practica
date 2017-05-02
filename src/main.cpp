@@ -4,6 +4,7 @@
 //GLFW
 #include <GLFW\glfw3.h>
 
+#include "Camera.h"
 #include "Shader.h"
 #include <iostream>
 #include <string>
@@ -24,38 +25,18 @@ float textOpacity = 0.9;
 float rotationX = 0.0;
 float rotationY = 0.0;
 float rotationZ = 0.0;
-float rotationCubes = 0.f;
 
-float lastFrame = 0.0f;
-float deltaTime = 0.0f;
+GLfloat deltaTime;
+GLfloat lastFrame;
 
-
-//Movimiento camera
-vec3 camPos = vec3(0.0f, 0.0f, 3.0f);
-vec3 camTarget = vec3(0.0f, 0.0f, 0.0f);
-vec3 camDirection = normalize(camPos - camTarget);
-vec3 vecUp = vec3(0.0f, 1.0f, 0.0f);
-vec3 camRight = normalize(cross(vecUp, camDirection));
-vec3 camUp = cross(camDirection, camRight);
-vec3 camFront = vec3(0.0f, 0.0f, -1.0f);
-
-
-GLfloat yawCam = -90.f;
-GLfloat pitchCam = 0.0f;
-GLfloat lastX = WIDTH / 2.0f;
-GLfloat lastY = HEIGHT / 2.0f;
-
-float FOV = 45.0f;
-
-
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
-void doMovement(GLFWwindow* window);
 void mouseMove(GLFWwindow* window, double xpos, double ypos);
 void mouseScroll(GLFWwindow* window, double xScroll, double yScroll);
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 
 
-bool status[1024];
+//bool status[1024];
 
+Camera cam(vec3(0.0f, 0.0f, 3.0f), vec3(0.0f,0.0f,0.0f), 0.03f, 45.0f);
 
 int main() {
 
@@ -105,6 +86,7 @@ int main() {
 	//Camara----------------------------------------------------------------------------------------------------------------------C
 	float aspectRatio = WIDTH / HEIGHT;
 	mat4 model;
+
 
 	//Rotation & Translation-----------------------------------------------------------------------------------------------------R&T
 
@@ -231,7 +213,6 @@ int main() {
 	while (!glfwWindowShouldClose(window)) {
 	
 		glfwPollEvents();
-		doMovement(window);
 
 		glClear(GL_COLOR_BUFFER_BIT);
 		glClearColor(0.2f, 0.2f, 0.4f, 1.0f);
@@ -252,24 +233,26 @@ int main() {
 
 
 		//Camara view & proyection
-		mat4 view = glm::lookAt(camPos, camPos + camFront, camUp);
-		mat4 proj = glm::perspective(glm::radians(FOV), aspectRatio, 1.0f, 100.0f);
+
+		mat4 proj = glm::perspective(glm::radians(cam.GetFOV()), aspectRatio, 1.0f, 100.0f);
 
 
 		//Get uniform location
 		GLint uniView = glGetUniformLocation(projectShader.Program, "view");
-		glUniformMatrix4fv(uniView, 1, GL_FALSE, glm::value_ptr(view));
+		glUniformMatrix4fv(uniView, 1, GL_FALSE, glm::value_ptr(cam.LookAt()));
 		GLint uniProj = glGetUniformLocation(projectShader.Program, "proj");
 		glUniformMatrix4fv(uniProj, 1, GL_FALSE, glm::value_ptr(proj));
 		GLint uniMode = glGetUniformLocation(projectShader.Program, "model");
 		glUniformMatrix4fv(uniMode, 1, GL_FALSE, glm::value_ptr(model));
 		
 		//Delta time
-		GLfloat actualTime = glfwGetTime();
+		actualTime = glfwGetTime();
 		deltaTime = actualTime - lastFrame;
 		lastFrame = actualTime;
-	
-		
+		cout << actualTime << endl;
+		cout << deltaTime << endl;
+		cout << lastFrame << endl << endl;
+
 		//Opacidad texturas
 		if (textureMove) {glUniform1f(moveTex, textOpacity);}
 		else if (!textureMove) {glUniform1f(moveTex, textOpacity);}
@@ -291,7 +274,7 @@ int main() {
 		for (int i = 1; i < 10; i++) {
 			glm::mat4 trans, rot;
 			trans = glm::translate(trans, CubesPositionBuffer[i]);
-			rot = glm::rotate(rot, actualTime * 0.1f * glm::radians(180.f), glm::vec3(0.3f, 1.0f, 0.0f)); 
+			rot = glm::rotate(rot, actualTime *0.1f * glm::radians(180.f), glm::vec3(0.3f, 1.0f, 0.0f));
 			model = trans * rot;
 			glUniformMatrix4fv(uniMode, 1, GL_FALSE, glm::value_ptr(model));
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -359,65 +342,10 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 }
 
-
-void doMovement(GLFWwindow* window) {
-	float cameraSpeed = 5.0f * deltaTime;
-
-	if (status[GLFW_KEY_W]) {
-		camPos += cameraSpeed * camFront;
-	}
-	if (status[GLFW_KEY_S]) {
-		camPos -= cameraSpeed * camFront;
-	}
-	if (status[GLFW_KEY_A]) {
-		camPos -= normalize(cross(camFront, camUp)) * cameraSpeed;
-	}
-	if (status[GLFW_KEY_D]) {
-		camPos += normalize(cross(camFront, camUp)) * cameraSpeed;
-	}
-}
-
-
-bool firstMouse = true;
-
 void mouseMove(GLFWwindow* window, double xpos, double ypos) {
-
-	if (firstMouse) {
-		lastX = xpos;
-		lastY = ypos;
-		firstMouse = false;
-	}
-	GLfloat xoffset = xpos - lastX;
-	GLfloat yoffset = lastY - ypos;
-	lastX = xpos;
-	lastY = ypos;
-
-	GLfloat Sensitivity = 0.03f;
-	xoffset *= Sensitivity;
-	yoffset *= Sensitivity;
-
-	yawCam += xoffset;
-	pitchCam += yoffset;
-
-	if (pitchCam > 89.0f) { pitchCam = 89.0f; }
-	if (pitchCam < -89.0f) { pitchCam = -89.0f; }
-
-	vec3 front;
-	front.x = cos(glm::radians(yawCam)) * cos(glm::radians(pitchCam));
-	front.y = sin(glm::radians(pitchCam));
-	front.z = sin(glm::radians(yawCam)) * cos(glm::radians(pitchCam));
-	camFront = glm::normalize(front);
+	cam.mouseMove(window, xpos, ypos);
 }
 
 void mouseScroll(GLFWwindow* window, double xScroll, double yScroll) {
-
-	if (FOV >= 1.0f && FOV <= 60.0f) {	
-		FOV -= yScroll; 
-	}
-	if (FOV <= 1.0f) { 
-		FOV = 1.0f; 
-	}
-	if (FOV >= 60.0f) {
-		FOV = 60.0f; 
-	}
+	cam.mouseScroll(window, xScroll, yScroll);
 }
