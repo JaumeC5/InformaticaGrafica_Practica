@@ -1,16 +1,16 @@
-﻿Compilación iniciada a las 03/05/2017 19:39:11.
+﻿Compilación iniciada a las 04/05/2017 0:50:20.
      1>Proyecto "C:\Users\Jaume\Documents\GitHub\InformaticaGrafica_Practica\Proyecto.vcxproj" en el nodo 2 (Build destinos).
      1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppBuild.targets(392,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (Practica1.vcxproj, Practica2.vcxproj).  This can lead to incorrect clean and rebuild behavior.
      1>ClCompile:
          D:\Microsoft Visual Studio 14.0\VC\bin\CL.exe /c /I.\include\soil\src /I.\Common /I.\include\glm /I.\include\glfw\include /I.\include\glew\include /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt src\main.cpp
          main.cpp
-     1>c:\users\jaume\documents\github\informaticagrafica_practica\src\camera.h(89): warning C4244: '=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
-     1>c:\users\jaume\documents\github\informaticagrafica_practica\src\camera.h(90): warning C4244: '=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
-     1>c:\users\jaume\documents\github\informaticagrafica_practica\src\camera.h(93): warning C4244: 'inicializando': conversión de 'double' a 'GLfloat'; posible pérdida de datos
-     1>c:\users\jaume\documents\github\informaticagrafica_practica\src\camera.h(94): warning C4244: 'inicializando': conversión de 'double' a 'GLfloat'; posible pérdida de datos
-     1>c:\users\jaume\documents\github\informaticagrafica_practica\src\camera.h(95): warning C4244: '=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
-     1>c:\users\jaume\documents\github\informaticagrafica_practica\src\camera.h(96): warning C4244: '=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
-     1>c:\users\jaume\documents\github\informaticagrafica_practica\src\camera.h(118): warning C4244: '-=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+     1>c:\users\jaume\documents\github\informaticagrafica_practica\src\camera.h(85): warning C4244: '=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+     1>c:\users\jaume\documents\github\informaticagrafica_practica\src\camera.h(86): warning C4244: '=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+     1>c:\users\jaume\documents\github\informaticagrafica_practica\src\camera.h(89): warning C4244: 'inicializando': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+     1>c:\users\jaume\documents\github\informaticagrafica_practica\src\camera.h(90): warning C4244: 'inicializando': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+     1>c:\users\jaume\documents\github\informaticagrafica_practica\src\camera.h(91): warning C4244: '=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+     1>c:\users\jaume\documents\github\informaticagrafica_practica\src\camera.h(92): warning C4244: '=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+     1>c:\users\jaume\documents\github\informaticagrafica_practica\src\camera.h(114): warning C4244: '-=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
      1>c:\users\jaume\documents\github\informaticagrafica_practica\src\main.cpp(24): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
      1>c:\users\jaume\documents\github\informaticagrafica_practica\src\main.cpp(249): warning C4244: '=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
      1>c:\users\jaume\documents\github\informaticagrafica_practica\src\main.cpp(304): warning C4305: '+=': truncamiento de 'double' a 'float'
@@ -30,4 +30,4 @@
 
 Compilación correcta.
 
-Tiempo transcurrido 00:00:02.36
+Tiempo transcurrido 00:00:02.75
