@@ -213,7 +213,7 @@ int main() {
 	while (!glfwWindowShouldClose(window)) {
 	
 		glfwPollEvents();
-		cam.doMovement(window);
+		cam.doMovement(window, deltaTime);
 
 		glClear(GL_COLOR_BUFFER_BIT);
 		glClearColor(0.2f, 0.2f, 0.4f, 1.0f);
@@ -231,7 +231,6 @@ int main() {
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, texture2);
 		glUniform1i(glGetUniformLocation(projectShader.Program, "Texture2"), 1);
-
 
 		//Camara view & proyection
 
@@ -255,6 +254,7 @@ int main() {
 		if (textureMove) {glUniform1f(moveTex, textOpacity);}
 		else if (!textureMove) {glUniform1f(moveTex, textOpacity);}
 
+
 		//Cubo central
 		glm::mat4 trans, rot, rotX,  rotY, rotZ;
 		trans = glm::translate(trans, CubesPositionBuffer[0]); 
@@ -267,6 +267,7 @@ int main() {
 		glUniformMatrix4fv(uniMode, 1, GL_FALSE, glm::value_ptr(model)); 
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
+
 
 		//Resto de cubos
 		for (int i = 1; i < 10; i++) {

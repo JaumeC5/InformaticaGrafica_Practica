@@ -22,8 +22,8 @@ GLfloat actualTime;
 
 class Camera {
 private:
-	vec3 camPos;
-	vec3 camFront;
+	vec3 camPos = vec3(0.0f, 0.0f, 3.0f);
+	vec3 camFront = vec3(0.0f, 0.0f, -1.0f);
 	vec3 camUp;
 	GLfloat deltaTime;
 	GLfloat lastFrame;
@@ -38,7 +38,7 @@ private:
 public:
 	Camera(vec3 position, vec3 direction, GLfloat sensitivity, GLfloat fov);
 
-	void doMovement(GLFWwindow * window);
+	void doMovement(GLFWwindow * window, float deltaTime);
 	void mouseMove(GLFWwindow * window, double xpos, double ypos);
 	void mouseScroll(GLFWwindow * window, double xScroll, double yScroll);
 	mat4 LookAt();
@@ -59,19 +59,9 @@ Camera::Camera(vec3 position, vec3 direction, GLfloat sensitivity, GLfloat fov) 
 	sens = sensitivity;
 	FOV = fov;
 
-	//Camara
-	camPos = vec3(0.0f, 0.0f, 3.0f);
-	camTarget = vec3(0.0f, 0.0f, 0.0f);
-	camDirection = normalize(camPos - camTarget);
-	vecUp = vec3(0.0f, 1.0f, 0.0f);
-	camRight = normalize(cross(vecUp, camDirection));
-	camUp = cross(camDirection, camRight);
-	camFront = vec3(0.0f, 0.0f, -1.0f);
-
-
 }
 
-void Camera::doMovement(GLFWwindow* window) {
+void Camera::doMovement(GLFWwindow* window, float deltaTime) {
 	float cameraSpeed = 5.0f * deltaTime;
 
 	if (status[GLFW_KEY_W]) {
@@ -86,9 +76,7 @@ void Camera::doMovement(GLFWwindow* window) {
 	if (status[GLFW_KEY_D]) {
 		camPos += normalize(cross(camFront, camUp)) * cameraSpeed;
 	}
-	cout << "camPos.x: " << camPos.x << endl;
-	cout << "camPos.y: " << camPos.y << endl;
-	cout << "camPos.z: " << camPos.z << endl;
+	
 }
 
 void Camera::mouseMove(GLFWwindow* window, double xpos, double ypos) {
@@ -134,6 +122,13 @@ void Camera::mouseScroll(GLFWwindow* window, double xScroll, double yScroll) {
 }
 
 mat4 Camera::LookAt() {
+
+	camTarget = vec3(0.0f, 0.0f, 0.0f);
+	camDirection = normalize(camPos - camTarget);
+	vecUp = vec3(0.0f, 1.0f, 0.0f);
+	camRight = normalize(cross(vecUp, camDirection));
+	camUp = cross(camDirection, camRight); 
+
 	return lookAt(camPos, camPos + camFront, camUp);
 }
 
