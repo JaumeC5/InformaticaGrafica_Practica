@@ -1,10 +1,10 @@
 #include "Model.h"
 
 
-Model::Model(){
+Model::Model() {
 }
 
-Model::Model(GLchar* path){
+Model::Model(GLchar* path) {
 	loadModel(path);
 }
 
@@ -15,11 +15,11 @@ void Model::Draw(Shader shader, GLint drawMode) {
 
 void Model::loadModel(string path) {
 	Assimp::Importer importer;
-	
-    //aiProcess_GenNormals : actually creates normals for each vertex if the model didn't contain normal vectors.
-    //aiProcess_SplitLargeMeshes : splits large meshes into smaller sub-meshes which is useful if your rendering has a maximum number of vertices allowed and can only process smaller meshes.
-    //aiProcess_OptimizeMeshes : actually does the reverse by trying to join several meshes into one larger mesh, reducing drawing calls for optimization.
-	
+
+	//aiProcess_GenNormals : actually creates normals for each vertex if the model didn't contain normal vectors.
+	//aiProcess_SplitLargeMeshes : splits large meshes into smaller sub-meshes which is useful if your rendering has a maximum number of vertices allowed and can only process smaller meshes.
+	//aiProcess_OptimizeMeshes : actually does the reverse by trying to join several meshes into one larger mesh, reducing drawing calls for optimization.
+
 	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
@@ -33,13 +33,13 @@ void Model::loadModel(string path) {
 
 void Model::processNode(aiNode* node, const aiScene* scene) {
 	// Process all the node's meshes (if any)
-	for (GLuint i = 0; i < node->mNumMeshes; i++){
+	for (GLuint i = 0; i < node->mNumMeshes; i++) {
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
 		meshes.push_back(processMesh(mesh, scene));
 	}
 
 	// Then do the same for each of its children
-	for (GLuint i = 0; i < node->mNumChildren; i++)	
+	for (GLuint i = 0; i < node->mNumChildren; i++)
 		processNode(node->mChildren[i], scene);
 }
 
@@ -48,7 +48,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene) {
 	vector<GLuint> indices;
 	vector<Texture> textures;
 
-	for (GLuint i = 0; i < mesh->mNumVertices; i++){
+	for (GLuint i = 0; i < mesh->mNumVertices; i++) {
 		Vertex vertex;
 		// Process vertex positions, normals and texture coordinates
 		vec3 vectAux;
@@ -57,7 +57,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene) {
 		vectAux.z = mesh->mVertices[i].z;
 		vertex.Position = vectAux;
 
-		if (mesh->HasNormals()){
+		if (mesh->HasNormals()) {
 			vectAux.x = mesh->mNormals[i].x;
 			vectAux.y = mesh->mNormals[i].y;
 			vectAux.z = mesh->mNormals[i].z;
@@ -65,9 +65,9 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene) {
 			vertex.Normal = vectAux;
 		}
 		vec2 vec = vec2(0.0f, 0.0f);
-		if (mesh->mTextureCoords[0]){// Comprobamos que tenga textura
+		if (mesh->mTextureCoords[0]) {// Comprobamos que tenga textura
 			vec.x = mesh->mTextureCoords[0][i].x;
-			vec.y = mesh->mTextureCoords[0][i].y;	
+			vec.y = mesh->mTextureCoords[0][i].y;
 		}
 		vertex.TexCoords = vec;
 		vertices.push_back(vertex);
@@ -92,7 +92,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene) {
 
 vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName) {
 	vector<Texture> textures;
-	for (GLuint i = 0; i < mat->GetTextureCount(type); i++){
+	for (GLuint i = 0; i < mat->GetTextureCount(type); i++) {
 		aiString str;
 		mat->GetTexture(type, i, &str);
 		Texture texture;
@@ -104,7 +104,7 @@ vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type,
 	return textures;
 }
 
-GLint Model::TextureFromFile(const char* path, string directory){
+GLint Model::TextureFromFile(const char* path, string directory) {
 	//Generate texture ID and load texture data 
 	string filename = string(path);
 	filename = directory + '/' + filename;
