@@ -1,6 +1,0 @@
-aplicacion donde haya un cuadrado a partir de triangulos. Ese cuadrado si puslo la tecla W pasa 
-a estar de forma visible a wireframe
-
-___
-|\|
----

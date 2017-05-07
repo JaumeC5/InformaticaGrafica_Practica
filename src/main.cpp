@@ -8,6 +8,8 @@
 #include "Shader.h"
 #include "Camera.h"
 #include "Model.h"
+#include "Object.h"
+
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -26,11 +28,16 @@ const GLint WIDTH = 800, HEIGHT = 600;
 GLfloat deltaTime;
 GLfloat lastFrame;
 
+float rotationAngleX = 0.0f;
+float rotationAngleY = 0.0f;
+vec3 objectPosition = vec3(0.0f, 0.0f, 0.0f);
+
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 void mouseMove(GLFWwindow* window, double xpos, double ypos);
 void mouseScroll(GLFWwindow* window, double xScroll, double yScroll);
 
 Camera cam(vec3(0.0f, 0.0f, 3.0f), vec3(0.0f,0.0f,0.0f), 0.03f, 45.0f);
+Object obj(vec3(1.0f, 1.0f, 1.0f), vec3(1.0f, 1.0f, 1.0f), vec3(0.0f, 0.0f, 0.0f), cube);
 
 int main() {
 
@@ -58,6 +65,8 @@ int main() {
 		return NULL;
 	}
 	
+	obj.Start();
+
 	glfwSetKeyCallback(window, key_callback);
 	glfwSetCursorPosCallback(window, mouseMove);
 	glfwSetScrollCallback(window, mouseScroll);
@@ -77,7 +86,6 @@ int main() {
 	float aspectRatio = WIDTH / HEIGHT;
 
 
-
 	//While-------------------------------------------------------------------------------------------------------------------While
 	while (!glfwWindowShouldClose(window)) {
 		//Delta time
@@ -88,12 +96,17 @@ int main() {
 		//Events
 		glfwPollEvents();
 		cam.doMovement(window, deltaTime);
+		obj.Draw();
 
 		//Clear
-		glClearColor(0.2f, 0.2f, 0.4f, 1.0f);
+		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		projectShader.USE();
+		GLint objectColorLoc = glGetUniformLocation(projectShader.Program, "objectColor");
+		GLint lightColorLoc = glGetUniformLocation(projectShader.Program, "lightColor");
+		glUniform3f(objectColorLoc, 1.0f, 0.5f, 0.31f);
+		glUniform3f(lightColorLoc, 1.0f, 1.0f, 1.0f);
 
 		//Camara model, view & proyection
 
@@ -104,12 +117,9 @@ int main() {
 		GLint uniView = glGetUniformLocation(projectShader.Program, "view");
 		glUniformMatrix4fv(uniView, 1, GL_FALSE, glm::value_ptr(cam.LookAt()));
 		
-		mat4 model;
-		model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f));
-		//model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
 		GLint uniMode = glGetUniformLocation(projectShader.Program, "model");
-		glUniformMatrix4fv(uniMode, 1, GL_FALSE, glm::value_ptr(model));
-		
+		glUniformMatrix4fv(uniMode, 1, GL_FALSE, glm::value_ptr(obj.GetModelMatrix()));
+	
 		glfwSwapBuffers(window);
 	}
 
@@ -129,6 +139,47 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		status[key] = false;
 	}
 
+	if (key == GLFW_KEY_KP_4) {
+		objectPosition += vec3(-1.0, 0.0f, 0.0f);
+		obj.Move(objectPosition);
+	}
+	if (key == GLFW_KEY_KP_6) {
+		objectPosition += vec3(1.0, 0.0f, 0.0f);
+		obj.Move(objectPosition);
+	}
+	if (key == GLFW_KEY_KP_8) {
+		objectPosition += vec3(0.0, 1.0f, 0.0f);
+		obj.Move(objectPosition);
+	}
+	if (key == GLFW_KEY_KP_2) {
+		objectPosition += vec3(0.0, -1.0f, 0.0f);
+		obj.Move(objectPosition);
+	}
+	if (key == GLFW_KEY_LEFT) {
+		vec3 rotateVector;
+		rotateVector = vec3(1.0f, 0.0f, 0.0f);
+		rotationAngleX -= 10.f;
+		obj.Rotate(rotateVector, rotationAngleX);
+	}
+	if (key == GLFW_KEY_RIGHT) {
+		vec3 rotateVector;
+		rotateVector = vec3(1.0f, 0.0f, 0.0f);
+		rotationAngleX += 10.f;
+		obj.Rotate(rotateVector, rotationAngleX);
+	}
+	if (key == GLFW_KEY_UP) {
+		vec3 rotateVector;
+		rotateVector = vec3(0.0f, 1.0f, 0.0f);
+		rotationAngleY += 10.f;
+		obj.Rotate(rotateVector, rotationAngleX);
+	}
+	if (key == GLFW_KEY_DOWN) {
+		vec3 rotateVector;
+		rotateVector = vec3(0.0f, 1.0f, 0.0f);
+		rotationAngleY -= 10.f;
+		obj.Rotate(rotateVector, rotationAngleX);
+	}
+
 }
 
 void mouseMove(GLFWwindow* window, double xpos, double ypos) {
@@ -138,4 +189,6 @@ void mouseMove(GLFWwindow* window, double xpos, double ypos) {
 void mouseScroll(GLFWwindow* window, double xScroll, double yScroll) {
 	cam.mouseScroll(window, xScroll, yScroll);
 }
+
+
 
