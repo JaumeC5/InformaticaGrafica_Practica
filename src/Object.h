@@ -20,6 +20,10 @@ class Object{
 public:
 	glm::mat4 model;
 
+	vec3 position2;
+	vec3 scale2;
+	vec3 rotation2;
+
 	Object(vec3 scale, vec3 rotation, vec3 position, FigureType typef);
 	~Object();
 

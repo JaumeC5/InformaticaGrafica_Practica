@@ -37,7 +37,8 @@ void mouseMove(GLFWwindow* window, double xpos, double ypos);
 void mouseScroll(GLFWwindow* window, double xScroll, double yScroll);
 
 Camera cam(vec3(0.0f, 0.0f, 3.0f), vec3(0.0f,0.0f,0.0f), 0.03f, 45.0f);
-Object obj(vec3(1.0f, 1.0f, 1.0f), vec3(1.0f, 1.0f, 1.0f), vec3(0.0f, 0.0f, 0.0f), cube);
+
+Object obj(vec3(1.0f, 1.0f, 1.0f), vec3(1.0f, 1.0f, 1.0f), vec3(objectPosition), cube);
 
 int main() {
 
@@ -81,7 +82,7 @@ int main() {
 
 	Shader projectShader("./src/projectVertex.vertexshader", "./src/projectFragment.fragmentshader");
 
-	Model projectModel("./src/spider/spider.obj");
+	//Model projectModel("./src/spider/spider.obj");
 
 	float aspectRatio = WIDTH / HEIGHT;
 
@@ -96,7 +97,7 @@ int main() {
 		//Events
 		glfwPollEvents();
 		cam.doMovement(window, deltaTime);
-		obj.Draw();
+
 
 		//Clear
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -119,6 +120,8 @@ int main() {
 		
 		GLint uniMode = glGetUniformLocation(projectShader.Program, "model");
 		glUniformMatrix4fv(uniMode, 1, GL_FALSE, glm::value_ptr(obj.GetModelMatrix()));
+		
+		obj.Draw();
 	
 		glfwSwapBuffers(window);
 	}
@@ -141,19 +144,15 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 	if (key == GLFW_KEY_KP_4) {
 		objectPosition += vec3(-1.0, 0.0f, 0.0f);
-		obj.Move(objectPosition);
 	}
 	if (key == GLFW_KEY_KP_6) {
 		objectPosition += vec3(1.0, 0.0f, 0.0f);
-		obj.Move(objectPosition);
 	}
 	if (key == GLFW_KEY_KP_8) {
 		objectPosition += vec3(0.0, 1.0f, 0.0f);
-		obj.Move(objectPosition);
 	}
 	if (key == GLFW_KEY_KP_2) {
 		objectPosition += vec3(0.0, -1.0f, 0.0f);
-		obj.Move(objectPosition);
 	}
 	if (key == GLFW_KEY_LEFT) {
 		vec3 rotateVector;

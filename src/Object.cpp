@@ -4,6 +4,9 @@
 
 Object::Object(vec3 scale, vec3 rotation, vec3 position, FigureType typef){
 
+	scale2 = scale;
+	rotation2 = rotation;
+	position2 = position;
 }
 
 
@@ -74,12 +77,15 @@ void Object::Start() {
 void Object::Draw() {
 
 	glBindVertexArray(VAO);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glBindVertexArray(0);
 
 }
 
 void Object::Move(vec3 translation) {
+	translation = position2;
+
 	mat4 translationMatrix;
 	translationMatrix = glm::translate(translationMatrix, translation);
 	model = translationMatrix;
@@ -90,6 +96,7 @@ void Object::Rotate(vec3 rota, float rotationAngle) {
 	model = rotationMatrix;
 }
 void Object::Scale(vec3 scal){
+
 	mat4 scaleMatrix;
 	scaleMatrix = glm::scale(scaleMatrix, scal);
 	model = scaleMatrix;

@@ -1,4 +1,4 @@
-﻿Compilación iniciada a las 07/05/2017 21:17:08.
+﻿Compilación iniciada a las 08/05/2017 0:01:09.
      1>Proyecto "C:\Users\Jaume\Documents\GitHub\InformaticaGrafica_Practica\Proyecto.vcxproj" en el nodo 2 (Build destinos).
      1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppBuild.targets(392,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (Practica1.vcxproj, Practica2.vcxproj).  This can lead to incorrect clean and rebuild behavior.
      1>ClCompile:
@@ -11,7 +11,7 @@
      1>c:\users\jaume\documents\github\informaticagrafica_practica\src\camera.h(91): warning C4244: '=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
      1>c:\users\jaume\documents\github\informaticagrafica_practica\src\camera.h(92): warning C4244: '=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
      1>c:\users\jaume\documents\github\informaticagrafica_practica\src\camera.h(114): warning C4244: '-=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
-     1>c:\users\jaume\documents\github\informaticagrafica_practica\src\main.cpp(92): warning C4244: '=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+     1>c:\users\jaume\documents\github\informaticagrafica_practica\src\main.cpp(93): warning C4244: '=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
          Object.cpp
          Generando código...
        Link:
@@ -39,4 +39,4 @@
 
 Compilación correcta.
 
-Tiempo transcurrido 00:00:02.43
+Tiempo transcurrido 00:00:02.37
