@@ -15,14 +15,17 @@ enum FigureType {
 	cube = 0,
 };
 
-class Object{
-	
+class Object {
+
 public:
 	glm::mat4 model;
 
-	vec3 position2;
-	vec3 scale2;
-	vec3 rotation2;
+	vec3 objPosition;
+	vec3 objScale;
+	vec3 objRotation;
+
+	float rotX = 0.0f;
+	float rotY = 0.0f;
 
 	Object(vec3 scale, vec3 rotation, vec3 position, FigureType typef);
 	~Object();
@@ -40,7 +43,7 @@ private:
 	GLuint VBO, VAO, EBO;
 	vec3 position;
 	vec3 scale;
-	vec3 rotation;	
+	vec3 rotation;
 
 };
 

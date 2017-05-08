@@ -2,15 +2,15 @@
 
 
 
-Object::Object(vec3 scale, vec3 rotation, vec3 position, FigureType typef){
+Object::Object(vec3 scale, vec3 rotation, vec3 position, FigureType typef) {
 
-	scale2 = scale;
-	rotation2 = rotation;
-	position2 = position;
+	objScale = scale;
+	objRotation = rotation;
+	objPosition = position;
 }
 
 
-Object::~Object(){}
+Object::~Object() {}
 
 void Object::Start() {
 
@@ -72,19 +72,17 @@ void Object::Start() {
 	glEnableVertexAttribArray(0);
 
 	glBindVertexArray(0);
+
 }
 
 void Object::Draw() {
-
 	glBindVertexArray(VAO);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glBindVertexArray(0);
-
 }
 
 void Object::Move(vec3 translation) {
-	translation = position2;
 
 	mat4 translationMatrix;
 	translationMatrix = glm::translate(translationMatrix, translation);
@@ -95,8 +93,7 @@ void Object::Rotate(vec3 rota, float rotationAngle) {
 	rotationMatrix = glm::rotate(rotationMatrix, glm::radians(rotationAngle), rota);
 	model = rotationMatrix;
 }
-void Object::Scale(vec3 scal){
-
+void Object::Scale(vec3 scal) {
 	mat4 scaleMatrix;
 	scaleMatrix = glm::scale(scaleMatrix, scal);
 	model = scaleMatrix;
@@ -112,5 +109,6 @@ vec3 Object::GetPosition() {
 }*/
 
 void Object::Delete() {
-
+	glDeleteVertexArrays(1, &VAO);
+	glDeleteBuffers(1, &VBO);
 }

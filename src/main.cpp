@@ -6,7 +6,7 @@
 
 #include "Camera.h"
 #include "Shader.h"
-#include "Camera.h"
+#include "Mesh.h"
 #include "Model.h"
 #include "Object.h"
 
@@ -25,6 +25,10 @@ using namespace std;
 
 const GLint WIDTH = 800, HEIGHT = 600;
 
+
+
+
+
 GLfloat deltaTime;
 GLfloat lastFrame;
 
@@ -36,9 +40,8 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 void mouseMove(GLFWwindow* window, double xpos, double ypos);
 void mouseScroll(GLFWwindow* window, double xScroll, double yScroll);
 
-Camera cam(vec3(0.0f, 0.0f, 3.0f), vec3(0.0f,0.0f,0.0f), 0.03f, 45.0f);
-
-Object obj(vec3(1.0f, 1.0f, 1.0f), vec3(1.0f, 1.0f, 1.0f), vec3(objectPosition), cube);
+Camera cam(vec3(0.0f, 0.0f, 8.0f), vec3(0.0f,0.0f,0.0f), 0.03f, 45.0f);
+Object obj(vec3(1.0f, 1.0f, 1.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f), cube);
 
 int main() {
 
@@ -66,29 +69,42 @@ int main() {
 		return NULL;
 	}
 	
-	obj.Start();
-
 	glfwSetKeyCallback(window, key_callback);
 	glfwSetCursorPosCallback(window, mouseMove);
 	glfwSetScrollCallback(window, mouseScroll);
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-	int screenWidth, screenHeight;
-	glfwGetFramebufferSize(window, &screenWidth, &screenHeight);
-	glViewport(0, 0, screenWidth, screenHeight);
-
 	glEnable(GL_DEPTH_TEST);
 
+	int screenWidth, screenHeight;
+	glfwGetFramebufferSize(window, &screenWidth, &screenHeight);
+
+	glViewport(0, 0, screenWidth, screenHeight);
+
+	glClear(GL_COLOR_BUFFER_BIT);
+	glClearColor(0, 0, 0, 0);
+
 	Shader projectShader("./src/projectVertex.vertexshader", "./src/projectFragment.fragmentshader");
-
-	//Model projectModel("./src/spider/spider.obj");
-
+	
+	
+	//Camara----------------------------------------------------------------------------------------------------------------------C
 	float aspectRatio = WIDTH / HEIGHT;
+	mat4 model;
 
+
+	//Rotation & Translation-----------------------------------------------------------------------------------------------------R&T
+
+	mat4 rotationTransX;
+	mat4 rotationTransY;
+	mat4 rotationTransZ;
+
+	//VAO & VBO------------------------------------------------------------------------------------------------------------------V&V
+	obj.Start();
 
 	//While-------------------------------------------------------------------------------------------------------------------While
 	while (!glfwWindowShouldClose(window)) {
+	
 		//Delta time
 		actualTime = glfwGetTime();
 		deltaTime = actualTime - lastFrame;
@@ -98,34 +114,47 @@ int main() {
 		glfwPollEvents();
 		cam.doMovement(window, deltaTime);
 
-
 		//Clear
+		glClear(GL_COLOR_BUFFER_BIT);
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		//Use shader
 		projectShader.USE();
+
+		//Color cube
 		GLint objectColorLoc = glGetUniformLocation(projectShader.Program, "objectColor");
 		GLint lightColorLoc = glGetUniformLocation(projectShader.Program, "lightColor");
 		glUniform3f(objectColorLoc, 1.0f, 0.5f, 0.31f);
 		glUniform3f(lightColorLoc, 1.0f, 1.0f, 1.0f);
 
-		//Camara model, view & proyection
+
+		//Draw Object
+		obj.Draw();
+
+		//Camara: view & proyection + unifrom 
 
 		mat4 proj = glm::perspective(glm::radians(cam.GetFOV()), aspectRatio, 1.0f, 100.0f);
-		GLint uniProj = glGetUniformLocation(projectShader.Program, "proj");
-		glUniformMatrix4fv(uniProj, 1, GL_FALSE, glm::value_ptr(proj));
 
 		GLint uniView = glGetUniformLocation(projectShader.Program, "view");
 		glUniformMatrix4fv(uniView, 1, GL_FALSE, glm::value_ptr(cam.LookAt()));
-		
+		GLint uniProj = glGetUniformLocation(projectShader.Program, "proj");
+		glUniformMatrix4fv(uniProj, 1, GL_FALSE, glm::value_ptr(proj));
+
 		GLint uniMode = glGetUniformLocation(projectShader.Program, "model");
-		glUniformMatrix4fv(uniMode, 1, GL_FALSE, glm::value_ptr(obj.GetModelMatrix()));
 		
-		obj.Draw();
-	
+		//Cubo Central
+		glUniformMatrix4fv(uniMode, 1, GL_FALSE, glm::value_ptr(obj.GetModelMatrix()));
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		
+
+		glBindVertexArray(0);
 		glfwSwapBuffers(window);
 	}
 
+	obj.Delete();
 	exit(EXIT_SUCCESS);
 }
 
@@ -134,49 +163,59 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GL_TRUE);
 
-	//Opacidad texturas
+	//Translacion cubo central
+
+	if (key == GLFW_KEY_KP_4) {
+		objectPosition -= vec3(0.05, 0.0f, 0.0f);
+		obj.Move(objectPosition);
+	}
+	if (key == GLFW_KEY_KP_6) {
+		objectPosition += vec3(0.05, 0.0f, 0.0f);
+		obj.Move(objectPosition);
+	}
+	if (key == GLFW_KEY_KP_8) {
+		objectPosition += vec3(0.0, 0.05f, 0.0f);
+		obj.Move(objectPosition);
+	}
+	if (key == GLFW_KEY_KP_2) {
+		objectPosition += vec3(0.0, -0.05f, 0.0f);
+		obj.Move(objectPosition);
+	}
+
+
+	//Rotacion cubo central
+	if (key == GLFW_KEY_LEFT) {
+		vec3 rotateVector;
+		rotateVector += vec3(0.0f, 1.0f, 0.0f);
+		rotationAngleX -= 5.f;
+		obj.Rotate(rotateVector, rotationAngleX);
+	}
+	if (key == GLFW_KEY_RIGHT) {
+		vec3 rotateVector;
+		rotateVector = vec3(0.0f, 1.0f, 0.0f);
+		rotationAngleX += 5.f;
+		obj.Rotate(rotateVector, rotationAngleX);
+	}
+	if (key == GLFW_KEY_UP) {
+		vec3 rotateVector;
+		rotateVector = vec3(1.0f, 0.0f, 0.0f);
+		rotationAngleY += 5.f;
+		obj.Rotate(rotateVector, rotationAngleY);
+	}
+
+	if (key == GLFW_KEY_DOWN) {
+		vec3 rotateVector;
+		rotateVector = vec3(1.0f, 0.0f, 0.0f);
+		rotationAngleY -= 5.f;
+		obj.Rotate(rotateVector, rotationAngleY);
+	}
+
+
 	if (action == GLFW_PRESS) {
 		status[key] = true;
 	}
 	else if (action == GLFW_RELEASE) {
 		status[key] = false;
-	}
-
-	if (key == GLFW_KEY_KP_4) {
-		objectPosition += vec3(-1.0, 0.0f, 0.0f);
-	}
-	if (key == GLFW_KEY_KP_6) {
-		objectPosition += vec3(1.0, 0.0f, 0.0f);
-	}
-	if (key == GLFW_KEY_KP_8) {
-		objectPosition += vec3(0.0, 1.0f, 0.0f);
-	}
-	if (key == GLFW_KEY_KP_2) {
-		objectPosition += vec3(0.0, -1.0f, 0.0f);
-	}
-	if (key == GLFW_KEY_LEFT) {
-		vec3 rotateVector;
-		rotateVector = vec3(1.0f, 0.0f, 0.0f);
-		rotationAngleX -= 10.f;
-		obj.Rotate(rotateVector, rotationAngleX);
-	}
-	if (key == GLFW_KEY_RIGHT) {
-		vec3 rotateVector;
-		rotateVector = vec3(1.0f, 0.0f, 0.0f);
-		rotationAngleX += 10.f;
-		obj.Rotate(rotateVector, rotationAngleX);
-	}
-	if (key == GLFW_KEY_UP) {
-		vec3 rotateVector;
-		rotateVector = vec3(0.0f, 1.0f, 0.0f);
-		rotationAngleY += 10.f;
-		obj.Rotate(rotateVector, rotationAngleX);
-	}
-	if (key == GLFW_KEY_DOWN) {
-		vec3 rotateVector;
-		rotateVector = vec3(0.0f, 1.0f, 0.0f);
-		rotationAngleY -= 10.f;
-		obj.Rotate(rotateVector, rotationAngleX);
 	}
 
 }
@@ -188,6 +227,4 @@ void mouseMove(GLFWwindow* window, double xpos, double ypos) {
 void mouseScroll(GLFWwindow* window, double xScroll, double yScroll) {
 	cam.mouseScroll(window, xScroll, yScroll);
 }
-
-
 
