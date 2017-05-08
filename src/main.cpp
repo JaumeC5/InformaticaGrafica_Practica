@@ -38,6 +38,7 @@ void mouseScroll(GLFWwindow* window, double xScroll, double yScroll);
 
 Camera cam(vec3(0.0f, 0.0f, 8.0f), vec3(0.0f,0.0f,0.0f), 0.03f, 45.0f);
 Object obj(vec3(1.0f, 1.0f, 1.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f), cube);
+Object lamp(vec3(0.1f, 0.1f, 0.1f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f), cube);
 
 int main() {
 
@@ -90,6 +91,7 @@ int main() {
 
 	//VAO & VBO------------------------------------------------------------------------------------------------------------------V&V
 	obj.Start();
+	lamp.Start();
 
 	//While-------------------------------------------------------------------------------------------------------------------While
 	while (!glfwWindowShouldClose(window)) {
@@ -112,11 +114,15 @@ int main() {
 		projectShader.USE();
 
 		//Color cube
-		GLint objectColorLoc = glGetUniformLocation(projectShader.Program, "objectColor");
-		GLint lightColorLoc = glGetUniformLocation(projectShader.Program, "lightColor");
-		glUniform3f(objectColorLoc, 1.0f, 0.5f, 0.31f);
-		glUniform3f(lightColorLoc, 1.0f, 1.0f, 1.0f);
+		GLint uniObjectColor = glGetUniformLocation(projectShader.Program, "objectColor");
+		GLint uniLightColor = glGetUniformLocation(projectShader.Program, "lightColor");
+		glUniform3f(uniObjectColor, 0.4f, 0.8f, 1.0f);
+		glUniform3f(uniLightColor, 1.0f, 1.0f, 1.0f);
 
+		GLint uniLightPosition = glGetUniformLocation(projectShader.Program, "lightPos");
+		GLint uniViewPosition = glGetUniformLocation(projectShader.Program, "viewPos");
+		glUniform3f(uniLightPosition, 2.5f, 2.5f, 2.5f);
+		glUniform3f(uniViewPosition, cam.getCameraPos().x, cam.getCameraPos().y, cam.getCameraPos().z);
 
 		//Draw Object
 		obj.Draw();
@@ -134,23 +140,28 @@ int main() {
 
 		//Lamp
 		lampShader.USE();
+
+		GLint lightColorLig = glGetUniformLocation(lampShader.Program, "lightColor");
+		glUniform3f(lightColorLig, 1.0f, 1.0f, 1.0f);
+		
 		uniView = glGetUniformLocation(lampShader.Program, "view");
 		glUniformMatrix4fv(uniView, 1, GL_FALSE, glm::value_ptr(cam.LookAt()));
 		uniProj = glGetUniformLocation(lampShader.Program, "projection");
 		glUniformMatrix4fv(uniProj, 1, GL_FALSE, glm::value_ptr(proj));
 
 		uniMode = glGetUniformLocation(lampShader.Program, "model");
-		
-		obj.Move(vec3(2.5f, 2.5f, 2.5f));
-		obj.Scale(vec3(0.1f));
-		glUniformMatrix4fv(uniMode, 1, GL_FALSE, glm::value_ptr(obj.GetModelMatrix()));
-		glDrawArrays(GL_TRIANGLES, 0, 36);
 
-		glBindVertexArray(0);
+		lamp.Move(vec3(2.5f, 2.5f, 2.5f));
+		//lamp.Scale(vec3(0.1f));
+
+
+		lamp.Draw();
+
+		glUniformMatrix4fv(uniMode, 1, GL_FALSE, glm::value_ptr(lamp.GetModelMatrix()));
 
 		glfwSwapBuffers(window);
 	}
-
+	lamp.Delete();
 	obj.Delete();
 	exit(EXIT_SUCCESS);
 }

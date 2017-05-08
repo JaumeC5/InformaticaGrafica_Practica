@@ -1,19 +1,17 @@
-﻿Compilación iniciada a las 08/05/2017 4:27:54.
+﻿Compilación iniciada a las 08/05/2017 19:46:18.
      1>Proyecto "C:\Users\Jaume\Documents\GitHub\InformaticaGrafica_Practica\Proyecto.vcxproj" en el nodo 2 (Build destinos).
      1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppBuild.targets(392,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (Practica1.vcxproj, Practica2.vcxproj).  This can lead to incorrect clean and rebuild behavior.
      1>ClCompile:
-         D:\Microsoft Visual Studio 14.0\VC\bin\CL.exe /c /I.\include\soil\src /I.\include\glm /I.\include\glfw\include /I.\include\glew\include /I.\include\assimp\include /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt src\Object.cpp src\main.cpp
+         D:\Microsoft Visual Studio 14.0\VC\bin\CL.exe /c /I.\include\soil\src /I.\include\glm /I.\include\glfw\include /I.\include\glew\include /I.\include\assimp\include /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt src\main.cpp
          main.cpp
-     1>c:\users\jaume\documents\github\informaticagrafica_practica\src\camera.h(86): warning C4244: '=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
      1>c:\users\jaume\documents\github\informaticagrafica_practica\src\camera.h(87): warning C4244: '=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
-     1>c:\users\jaume\documents\github\informaticagrafica_practica\src\camera.h(90): warning C4244: 'inicializando': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+     1>c:\users\jaume\documents\github\informaticagrafica_practica\src\camera.h(88): warning C4244: '=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
      1>c:\users\jaume\documents\github\informaticagrafica_practica\src\camera.h(91): warning C4244: 'inicializando': conversión de 'double' a 'GLfloat'; posible pérdida de datos
-     1>c:\users\jaume\documents\github\informaticagrafica_practica\src\camera.h(92): warning C4244: '=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+     1>c:\users\jaume\documents\github\informaticagrafica_practica\src\camera.h(92): warning C4244: 'inicializando': conversión de 'double' a 'GLfloat'; posible pérdida de datos
      1>c:\users\jaume\documents\github\informaticagrafica_practica\src\camera.h(93): warning C4244: '=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
-     1>c:\users\jaume\documents\github\informaticagrafica_practica\src\camera.h(115): warning C4244: '-=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
-     1>c:\users\jaume\documents\github\informaticagrafica_practica\src\main.cpp(98): warning C4244: '=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
-         Object.cpp
-         Generando código...
+     1>c:\users\jaume\documents\github\informaticagrafica_practica\src\camera.h(94): warning C4244: '=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+     1>c:\users\jaume\documents\github\informaticagrafica_practica\src\camera.h(116): warning C4244: '-=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+     1>c:\users\jaume\documents\github\informaticagrafica_practica\src\main.cpp(100): warning C4244: '=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
        Link:
          D:\Microsoft Visual Studio 14.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Jaume\Documents\GitHub\InformaticaGrafica_Practica\Debug\Practica3.exe" /INCREMENTAL /NOLOGO /LIBPATH:.\include\soil\lib /LIBPATH:".\include\glfw\lib-vc2015" /LIBPATH:.\include\glew\lib\Release\Win32 /LIBPATH:.\include\assimp\lib\x86 opengl32.lib glew32s.lib glfw3.lib assimp.lib libSOIL.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /Debug /PDB:"C:\Users\Jaume\Documents\GitHub\InformaticaGrafica_Practica\Debug\Practica3.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Jaume\Documents\GitHub\InformaticaGrafica_Practica\Debug\Practica3.lib" /MACHINE:X86 Debug\main.obj
          Debug\Mesh.obj
@@ -41,4 +39,4 @@
 
 Compilación correcta.
 
-Tiempo transcurrido 00:00:01.94
+Tiempo transcurrido 00:00:01.89

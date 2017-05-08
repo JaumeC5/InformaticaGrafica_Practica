@@ -68,8 +68,14 @@ void Object::Start() {
 
 	glBindVertexArray(VAO);
 
+	//Position
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
 	glEnableVertexAttribArray(0);
+
+	//Normal
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+	glEnableVertexAttribArray(1);
+	glBindVertexArray(0);
 
 	glBindVertexArray(0);
 
@@ -83,6 +89,7 @@ void Object::Draw() {
 }
 
 void Object::Move(vec3 translation) {
+	translation += objPosition;
 	mat4 translationMatrix;
 	translationMatrix = glm::translate(translationMatrix, translation);
 	model = translationMatrix;
@@ -95,6 +102,7 @@ void Object::Rotate(vec3 rota, float rotationAngle) {
 }
 
 void Object::Scale(vec3 scal) {
+	scal = objScale;
 	mat4 scaleMatrix;
 	scaleMatrix = glm::scale(scaleMatrix, scal);
 	model = scaleMatrix;

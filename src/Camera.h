@@ -43,6 +43,7 @@ public:
 	void mouseScroll(GLFWwindow * window, double xScroll, double yScroll);
 	mat4 LookAt();
 	GLfloat GetFOV();
+	vec3 getCameraPos();
 
 	vec3 camTarget;
 	vec3 camDirection;
@@ -135,4 +136,8 @@ mat4 Camera::LookAt() {
 
 GLfloat Camera::GetFOV() {
 	return FOV;
+}
+
+vec3 Camera::getCameraPos() {
+	return camPos;
 }
