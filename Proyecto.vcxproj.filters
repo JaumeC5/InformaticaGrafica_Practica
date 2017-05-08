@@ -55,5 +55,11 @@
     <None Include="src\projectVertex.vertexshader">
       <Filter>Archivos de recursos</Filter>
     </None>
+    <None Include="src\lampVertex.vertexshader">
+      <Filter>Archivos de recursos</Filter>
+    </None>
+    <None Include="src\lampFragment.fragmentshader">
+      <Filter>Archivos de recursos</Filter>
+    </None>
   </ItemGroup>
 </Project>

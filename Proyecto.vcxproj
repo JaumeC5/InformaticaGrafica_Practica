@@ -33,6 +33,8 @@
     <ClInclude Include="src\Shader.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="src\lampFragment.fragmentshader" />
+    <None Include="src\lampVertex.vertexshader" />
     <None Include="src\projectFragment.fragmentshader" />
     <None Include="src\projectVertex.vertexshader" />
   </ItemGroup>

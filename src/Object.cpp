@@ -83,16 +83,17 @@ void Object::Draw() {
 }
 
 void Object::Move(vec3 translation) {
-
 	mat4 translationMatrix;
 	translationMatrix = glm::translate(translationMatrix, translation);
 	model = translationMatrix;
 }
+
 void Object::Rotate(vec3 rota, float rotationAngle) {
 	mat4 rotationMatrix;
 	rotationMatrix = glm::rotate(rotationMatrix, glm::radians(rotationAngle), rota);
 	model = rotationMatrix;
 }
+
 void Object::Scale(vec3 scal) {
 	mat4 scaleMatrix;
 	scaleMatrix = glm::scale(scaleMatrix, scal);

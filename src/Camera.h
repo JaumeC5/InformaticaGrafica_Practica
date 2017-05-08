@@ -52,8 +52,9 @@ public:
 	
 };
 
+
 Camera::Camera(vec3 position, vec3 direction, GLfloat sensitivity, GLfloat fov) {
-	//Constructor
+
 	camPos = position;
 	camDirection = direction;
 	sens = sensitivity;
@@ -76,7 +77,7 @@ void Camera::doMovement(GLFWwindow* window, float deltaTime) {
 	if (status[GLFW_KEY_D]) {
 		camPos += normalize(cross(camFront, camUp)) * cameraSpeed;
 	}
-	
+
 }
 
 void Camera::mouseMove(GLFWwindow* window, double xpos, double ypos) {
@@ -127,7 +128,7 @@ mat4 Camera::LookAt() {
 	camDirection = normalize(camPos - camTarget);
 	vecUp = vec3(0.0f, 1.0f, 0.0f);
 	camRight = normalize(cross(vecUp, camDirection));
-	camUp = cross(camDirection, camRight); 
+	camUp = cross(camDirection, camRight);
 
 	return lookAt(camPos, camPos + camFront, camUp);
 }

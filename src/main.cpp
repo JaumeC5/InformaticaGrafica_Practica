@@ -25,10 +25,6 @@ using namespace std;
 
 const GLint WIDTH = 800, HEIGHT = 600;
 
-
-
-
-
 GLfloat deltaTime;
 GLfloat lastFrame;
 
@@ -86,18 +82,11 @@ int main() {
 	glClearColor(0, 0, 0, 0);
 
 	Shader projectShader("./src/projectVertex.vertexshader", "./src/projectFragment.fragmentshader");
+	Shader lampShader("./src/lampVertex.vertexshader", "./src/lampFragment.fragmentshader");
 	
 	
 	//Camara----------------------------------------------------------------------------------------------------------------------C
 	float aspectRatio = WIDTH / HEIGHT;
-	mat4 model;
-
-
-	//Rotation & Translation-----------------------------------------------------------------------------------------------------R&T
-
-	mat4 rotationTransX;
-	mat4 rotationTransY;
-	mat4 rotationTransZ;
 
 	//VAO & VBO------------------------------------------------------------------------------------------------------------------V&V
 	obj.Start();
@@ -140,17 +129,25 @@ int main() {
 		glUniformMatrix4fv(uniView, 1, GL_FALSE, glm::value_ptr(cam.LookAt()));
 		GLint uniProj = glGetUniformLocation(projectShader.Program, "proj");
 		glUniformMatrix4fv(uniProj, 1, GL_FALSE, glm::value_ptr(proj));
-
 		GLint uniMode = glGetUniformLocation(projectShader.Program, "model");
-		
-		//Cubo Central
 		glUniformMatrix4fv(uniMode, 1, GL_FALSE, glm::value_ptr(obj.GetModelMatrix()));
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+		//Lamp
+		lampShader.USE();
+		uniView = glGetUniformLocation(lampShader.Program, "view");
+		glUniformMatrix4fv(uniView, 1, GL_FALSE, glm::value_ptr(cam.LookAt()));
+		uniProj = glGetUniformLocation(lampShader.Program, "projection");
+		glUniformMatrix4fv(uniProj, 1, GL_FALSE, glm::value_ptr(proj));
+
+		uniMode = glGetUniformLocation(lampShader.Program, "model");
+		
+		obj.Move(vec3(2.5f, 2.5f, 2.5f));
+		obj.Scale(vec3(0.1f));
+		glUniformMatrix4fv(uniMode, 1, GL_FALSE, glm::value_ptr(obj.GetModelMatrix()));
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
-		
-
 		glBindVertexArray(0);
+
 		glfwSwapBuffers(window);
 	}
 
@@ -178,7 +175,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		obj.Move(objectPosition);
 	}
 	if (key == GLFW_KEY_KP_2) {
-		objectPosition += vec3(0.0, -0.05f, 0.0f);
+		objectPosition -= vec3(0.0, 0.05f, 0.0f);
 		obj.Move(objectPosition);
 	}
 
