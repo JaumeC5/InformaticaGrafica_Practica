@@ -33,10 +33,16 @@
     <ClInclude Include="src\Shader.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="src\directionalLightFragment.fragmentshader" />
+    <None Include="src\directionalLightVertex.vertexshader" />
     <None Include="src\lampFragment.fragmentshader" />
     <None Include="src\lampVertex.vertexshader" />
+    <None Include="src\pointLightFragment.fragmentshader" />
+    <None Include="src\pointLightVertex.vertexshader" />
     <None Include="src\projectFragment.fragmentshader" />
     <None Include="src\projectVertex.vertexshader" />
+    <None Include="src\spotlightFragment.fragmentshader" />
+    <None Include="src\spotlightVertex.vertexshader" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{3FC640D2-EFA2-403C-A406-DF29A85CFD5D}</ProjectGuid>

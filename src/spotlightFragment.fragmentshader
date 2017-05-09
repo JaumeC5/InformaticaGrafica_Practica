@@ -1,0 +1,43 @@
+#version 330 core
+
+// Ouput data
+
+out vec4 color;
+
+in vec3 Nfrag;  
+in vec3 Normal; 
+
+uniform vec3 lightColor;
+uniform vec3 objectColor;
+
+uniform vec3 lightPos; 
+uniform vec3 viewPos;
+
+
+void main()
+{    
+	//Ambiental: Proviene de todas direcciones e ilumina todas las direcciones
+    float ambientIntensity = 0.3f;
+	float ambientReflexion = 0.8f;
+    vec3 ambient = ambientIntensity * ambientReflexion * lightColor;
+  	
+    //Difusa: Proviene de una dirección y se refleja en todas direcciones
+	float difuseIntensity = 0.9f;
+	float difuseReflexion = 0.9f;
+	vec3 difuseIlumination = vec3(1.0f, 0.0f, 0.0f);
+    vec3 norm = normalize(Normal);
+    vec3 lightDir = normalize(lightPos - Nfrag); 
+	float diff = max(dot(norm, lightDir), 0.0f) * (1/(difuseIlumination.x + difuseIlumination.y + difuseIlumination.z)); //Max pq si el angulo del de los dos vectores es +90 el dot product se vuelve negativo. Caras tapadas + negras
+    vec3 diffuse = difuseIntensity * difuseReflexion * diff * lightColor;
+    
+    //Especular: Proviene de una dirección y se refleja en una dirección
+    float specularIntensity = 0.5f;
+	float specularReflexion = 0.9f;
+    vec3 viewDir = normalize(viewPos - Nfrag);
+    vec3 reflectDir = reflect(-lightDir, norm);  //lightDir apunta del fragmento a la luz. Con - apunta al revés
+    float spec = pow(dot(viewDir, reflectDir), 27);
+    vec3 specular = specularIntensity * specularReflexion * spec * lightColor;  
+        
+    vec3 result = (ambient + diffuse + specular) * objectColor;
+    color = vec4(result, 1.0f);
+}

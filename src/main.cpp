@@ -84,6 +84,9 @@ int main() {
 
 	Shader projectShader("./src/projectVertex.vertexshader", "./src/projectFragment.fragmentshader");
 	Shader lampShader("./src/lampVertex.vertexshader", "./src/lampFragment.fragmentshader");
+	//Shader directionalLightShader("./src/directionalLightVertex.vertexshader", "./src/directionalLightFragment.fragmentshader");
+	//Shader pointLightShader("./src/pointLightVertex.vertexshader", "./src/pointLightFragment.fragmentshader");
+	//Shader spotLightShader("./src/pointLightVertex.vertexshader", "./src/pointLightFragment.fragmentshader");
 	
 	
 	//Camara----------------------------------------------------------------------------------------------------------------------C
@@ -156,8 +159,10 @@ int main() {
 
 
 		lamp.Draw();
-
 		glUniformMatrix4fv(uniMode, 1, GL_FALSE, glm::value_ptr(lamp.GetModelMatrix()));
+
+
+
 
 		glfwSwapBuffers(window);
 	}

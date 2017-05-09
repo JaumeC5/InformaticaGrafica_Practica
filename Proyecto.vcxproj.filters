@@ -61,5 +61,23 @@
     <None Include="src\lampFragment.fragmentshader">
       <Filter>Archivos de recursos</Filter>
     </None>
+    <None Include="src\directionalLightVertex.vertexshader">
+      <Filter>Archivos de recursos</Filter>
+    </None>
+    <None Include="src\directionalLightFragment.fragmentshader">
+      <Filter>Archivos de recursos</Filter>
+    </None>
+    <None Include="src\pointLightFragment.fragmentshader">
+      <Filter>Archivos de recursos</Filter>
+    </None>
+    <None Include="src\pointLightVertex.vertexshader">
+      <Filter>Archivos de recursos</Filter>
+    </None>
+    <None Include="src\spotlightVertex.vertexshader">
+      <Filter>Archivos de recursos</Filter>
+    </None>
+    <None Include="src\spotlightFragment.fragmentshader">
+      <Filter>Archivos de recursos</Filter>
+    </None>
   </ItemGroup>
 </Project>

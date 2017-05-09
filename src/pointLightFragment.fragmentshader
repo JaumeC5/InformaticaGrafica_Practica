@@ -1,0 +1,48 @@
+#version 330 core
+
+// Ouput data
+
+out vec4 color;
+
+in vec3 Nfrag;  
+in vec3 Normal; 
+
+uniform vec3 ambientColor;
+uniform vec3 diffuseColor;
+uniform vec3 specularColor;
+uniform vec3 objectColor;
+
+uniform vec3 lightPos; 
+uniform vec3 viewPos;
+
+
+void main()
+{    
+	//Ambiental
+    vec3 ambient = ambientColor;
+  	
+    //Difusa
+	vec3 norm = normalize(Normal);
+    vec3 lightDir = normalize(-lightPos * Nfrag);  
+	float diff = max(dot(norm, lightDir), 0.0f);
+    vec3 diffuse = diff * diffuseColor;
+    
+    //Especular: Proviene de una dirección y se refleja en una dirección
+    vec3 viewDir = normalize(viewPos - Nfrag);
+    vec3 reflectDir = reflect(-lightDir, norm);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 27);
+    vec3 specular = spec * specularColor; 
+
+
+	vec3 d = length(lightPos - Nfrag);
+
+	float Cx = 1.0f;
+	float Cy = 0.07 * d;
+	float Cz = 0.017 * d * d;
+
+	float fatt = 1/(Cx + Cy + Cz);
+        
+	//Resultado
+
+    color = vec4( (fatt * (ambient + diffuse + specular)) * objectColor,  1.0f);
+}

@@ -16,6 +16,7 @@ uniform vec3 viewPos;
 
 void main()
 {    
+
 	//Ambiental: Proviene de todas direcciones e ilumina todas las direcciones
     float ambientIntensity = 0.3f;
 	float ambientReflexion = 0.8f;
@@ -40,4 +41,5 @@ void main()
         
     vec3 result = (ambient + diffuse + specular) * objectColor;
     color = vec4(result, 1.0f);
+
 }
